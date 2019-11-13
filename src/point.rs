@@ -189,6 +189,13 @@ impl Point {
             hypot_func(px - c_ptx, py - c_pty)
         }
     }
+
+    ///Compute angle at point
+    fn angle_at_point(&self, a: Point, b: Point) -> f64 {
+        let sa = a.sub(self);
+        let sb = b.sub(self);
+        sa.cross_product(sb).atan2(sa.dot_product(sb)).abs()
+    }
 }
 
 impl<T> From<(T, T)> for Point where T: NumCast + Copy {
