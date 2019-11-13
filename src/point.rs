@@ -4,6 +4,7 @@ use std::fmt::Debug;
 use math_util::{num, Feq, EPSILON, PI, TAU, NumCast};
 use std::ops::{Index, IndexMut};
 use robust_orientation::orientation_2d;
+use side_rel::Side;
 
 
 /// Point is a 2D (x:float, y:float) point type.
@@ -196,6 +197,21 @@ impl Point {
         let sb = b.sub(self);
         sa.cross_product(sb).atan2(sa.dot_product(sb)).abs()
     }
+
+///position of self relative to line a, b
+fn side_of(&self, a:Point, b :Point) -> Side {
+	let mut s = Side::new();
+	let ccw = self.orientation2d(a, b);
+	if ccw == 0.0 {
+		s.as_on();
+	} else if ccw < 0. {
+		s.as_left();
+	} else if ccw > 0. {
+		s.as_right();
+	}
+	s
+}
+
 }
 
 impl<T> From<(T, T)> for Point where T: NumCast + Copy {
