@@ -1,4 +1,5 @@
 pub mod point;
+pub use point ::Point;
 
 pub enum GeoType {
     Point,
