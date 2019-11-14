@@ -17,15 +17,24 @@ pub struct Point {
 }
 
 impl Point {
+    ///Construct new point from x and y coordinates
     pub fn new(x: f64, y: f64) -> Point {
         Point { x, y }
     }
 
+    ///Construct new point from array
     pub fn new_from_array(a: &[f64; 2]) -> Point {
         Point { x: a[0], y: a[1] }
     }
 
+    ///Geometry Type
+    #[inline]
+    pub fn geo_type(&self) -> crate::GeoType {
+        crate::GeoType::Point
+    }
+
     ///Operator : equals
+    #[inline]
     pub fn equals(&self, other: &Point) -> bool {
         self.x.feq(other.x) && self.y.feq(other.y)
     }
@@ -37,17 +46,20 @@ impl Point {
     }
 
     ///As tuple
+    #[inline]
     pub fn as_tuple(&self) -> (f64, f64) {
         (self.x, self.y)
     }
 
     ///Computes vector magnitude given x an dy component
+    #[inline]
     pub fn magnitude(&self) -> f64 {
         self.x.hypot(self.y)
     }
+
     ///Computes vector square magnitude given pt as x, y components
     pub fn square_magnitude(&self) -> f64 {
-        (self.x * self.x) + (self.y * self.y)
+        self.square_length()
     }
 
     ///Computes distance between two points

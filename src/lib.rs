@@ -1,10 +1,17 @@
-
 pub mod point;
+
+pub enum GeoType {
+    Point,
+    Segment,
+    LineString,
+    Polygon,
+    Unknown,
+}
 
 #[cfg(test)]
 mod tests {
     use super::*;
-    use point::{Point};
+    use point::Point;
     use math_util::SQRT_2;
 
     #[test]

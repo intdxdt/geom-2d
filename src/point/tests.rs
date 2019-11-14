@@ -12,7 +12,7 @@ fn test_point() {
     *b.nth_mut(1) = 1.5;
     assert_eq!(b.nth(0), 2.);
     assert_eq!(b.nth(1), 1.5);
-    let c  = Point::generate(|_| 0.3);
+    let c = Point::generate(|_| 0.3);
     assert_eq!(c.as_tuple(), (0.3, 0.3));
 
     let pa = pt![3, 4];
@@ -283,6 +283,36 @@ fn test_distance_to_vector() {
         assert_eq!(round(dists[i], 2), round(t_dists[i], 2));
     }
 }
+
+#[test]
+fn test_side_of() {
+    let a = pt!(237, 289);
+    let b = pt!(404.25, 357.25);
+    let c = pt!(460, 380);
+    let d = pt!(297.13043478260863, 339.30434782608694);
+    let e = pt!(445.8260869565217, 350.17391304347825);
+    assert!(b.side_of(a, c).is_on());
+    assert!(b.side_of(a, c).is_on_or_left());
+    assert!(b.side_of(a, c).is_on_or_right());
+
+    assert!(d.side_of(a, c).is_left());
+    assert!(d.side_of(a, c).is_on_or_left());
+    assert!(!d.side_of(a, c).is_on_or_right());
+
+    assert!(e.side_of(a, c).is_right());
+    assert!(e.side_of(a, c).is_on_or_right());
+    assert!(!e.side_of(a, c).is_on_or_left());
+}
+
+#[test]
+fn test_angle_at_point() {
+    let a = pt!(-1.28, 0.74);
+    let b = pt!(1.9, 4.2);
+    let c = pt!(3.16, -0.84);
+    assert_eq!(round(a.angle_at_point(b, c), 8), round(1.1694239325184717, 8));
+    assert_eq!(round(b.angle_at_point(a, c), 8), round(0.9882331199311394, 8));
+}
+
 
 #[test]
 fn test_serialize_deserialize() {
