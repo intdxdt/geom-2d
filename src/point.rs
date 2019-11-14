@@ -192,26 +192,25 @@ impl Point {
     }
 
     ///Compute angle at point
-    fn angle_at_point(&self, a: Point, b: Point) -> f64 {
+    pub fn angle_at_point(&self, a: Point, b: Point) -> f64 {
         let sa = a.sub(self);
         let sb = b.sub(self);
         sa.cross_product(sb).atan2(sa.dot_product(sb)).abs()
     }
 
-///position of self relative to line a, b
-fn side_of(&self, a:Point, b :Point) -> Side {
-	let mut s = Side::new();
-	let ccw = self.orientation2d(a, b);
-	if ccw == 0.0 {
-		s.as_on();
-	} else if ccw < 0. {
-		s.as_left();
-	} else if ccw > 0. {
-		s.as_right();
-	}
-	s
-}
-
+    ///position of self relative to line a, b
+    pub fn side_of(&self, a: Point, b: Point) -> Side {
+        let mut s = Side::new();
+        let ccw = self.orientation2d(a, b);
+        if ccw == 0.0 {
+            s.as_on();
+        } else if ccw < 0. {
+            s.as_left();
+        } else if ccw > 0. {
+            s.as_right();
+        }
+        s
+    }
 }
 
 impl<T> From<(T, T)> for Point where T: NumCast + Copy {
