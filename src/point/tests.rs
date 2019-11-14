@@ -16,6 +16,11 @@ fn test_point() {
     assert_eq!(c.as_tuple(), (0.3, 0.3));
 
     let pa = pt![3, 4];
+    assert_eq!(
+        std::mem::discriminant(&pa.geo_type()),
+        std::mem::discriminant(&crate::GeoType::Point)
+    );
+
     let mut m_pa = Point::new_from_array(&[3.0, 4.0]);
     let pb = Point::new(3.0, 4.0);
     let pc = Point::new(5.0, 4.0);
