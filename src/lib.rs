@@ -1,5 +1,6 @@
 pub mod point;
 pub use point ::Point;
+pub use coordinate::Coordinate;
 
 pub enum GeoType {
     Point,
