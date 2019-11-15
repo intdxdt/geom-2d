@@ -54,10 +54,17 @@ fn test_distance_magnitude() {
     assert_eq!(pt.distance(&Point { x: 4., y: 5. }), SQRT_2);
     assert_eq!(pt.square_distance(&Point { x: 4., y: 5. }), 2.0);
 
+    let pts:Points = vec![[0, 0], [4, 3], [0, 0], [1, 1]].into();
+
     let a = pt![0, 0];
     let b = pt![4, 3];
     let z = pt![0, 0];
     let o = pt![1, 1];
+    assert_eq!(a, pts[0]);
+    assert_eq!(b, pts[1]);
+    assert_eq!(z, pts[2]);
+    assert_eq!(o, pts[3]);
+
     assert_eq!(o.distance(&z), SQRT_2);
     let x = pt!(-3, 2);
     assert_eq!(round(x.distance(&z), 8),

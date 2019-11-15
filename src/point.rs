@@ -225,6 +225,11 @@ impl Point {
     }
 }
 
+pub struct Points {
+    pub points: Vec<Point>
+}
+
+
 impl<T> From<(T, T)> for Point where T: NumCast + Copy {
     fn from(tup: (T, T)) -> Self {
         Point { x: num::cast(tup.0).unwrap(), y: num::cast(tup.1).unwrap() }
@@ -249,15 +254,22 @@ impl From<&Vec<f64>> for Point {
     }
 }
 
+impl<T> From<Vec<[T; 2]>> for Points where T: NumCast + Copy {
+    fn from(items: Vec<[T; 2]>) -> Self {
+        let mut points = vec![];
+        for array in items {
+            points.push(array.into())
+        }
+        Points { points }
+    }
+}
+
+
 impl Eq for Point {}
 
 impl PartialEq for Point {
     fn eq(&self, other: &Self) -> bool {
         self.equals(other)
-    }
-
-    fn ne(&self, other: &Self) -> bool {
-        !self.equals(other)
     }
 }
 
@@ -317,6 +329,13 @@ impl Index<usize> for Point {
             1 => &self.y,
             _ => unreachable!(),
         }
+    }
+}
+
+impl Index<usize> for Points {
+    type Output = Point ;
+    fn index(&self, i: usize) -> &Self::Output {
+        &self.points[i]
     }
 }
 
