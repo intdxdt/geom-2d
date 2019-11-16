@@ -14,9 +14,13 @@ fn test_linestring() {
     let pts_open = vec![[5.538, 8.467], [5.498, 8.559], [5.858, 8.987], [6.654, 8.638], [6.549, 8.024], [5.765, 8.082]];
 
     let coords: Points = pts.into();
+    println!("{}", coords[0]);
+
     let ln = LineString::new(&wkt.coordinates[0]);
-    println!("{}", ln.bbox.wkt());
+    println!("{}", ln.bbox);
 //    for o in ln.chains {
 //        println!("{}", o)
 //    }
+    println!("{}", ln);
+
 }

@@ -48,7 +48,7 @@ impl MonoMBR {
 
 impl Display for MonoMBR{
     fn fmt(&self, f: &mut Formatter<'_>) -> Result<(), Error> {
-        write!(f, "{}",  self.wkt())
+        write!(f, "{}",  self.mbr)
     }
 }
 

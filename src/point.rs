@@ -5,6 +5,8 @@ use math_util::{num, Feq, EPSILON, PI, TAU, NumCast};
 use std::ops::{Index, IndexMut};
 use robust_orientation::orientation_2d;
 use side_rel::Side;
+use serde::export::Formatter;
+use serde::export::fmt::Error;
 
 
 /// Point is a 2D (x:float, y:float) point type.
@@ -223,12 +225,24 @@ impl Point {
         }
         s
     }
+
+    pub fn fmt_xy(&self) -> String {
+        format!("{} {}", self.x, self.y)
+    }
 }
+
+
 
 pub struct Points {
     pub points: Vec<Point>
 }
 
+
+impl std::fmt::Display for Point {
+    fn fmt(&self, f: &mut Formatter<'_>) -> Result<(), Error> {
+        write!(f, "POINT({})", self.fmt_xy())
+    }
+}
 
 impl<T> From<(T, T)> for Point where T: NumCast + Copy {
     fn from(tup: (T, T)) -> Self {
@@ -263,7 +277,6 @@ impl<T> From<Vec<[T; 2]>> for Points where T: NumCast + Copy {
         Points { points }
     }
 }
-
 
 impl Eq for Point {}
 
@@ -333,7 +346,7 @@ impl Index<usize> for Point {
 }
 
 impl Index<usize> for Points {
-    type Output = Point ;
+    type Output = Point;
     fn index(&self, i: usize) -> &Self::Output {
         &self.points[i]
     }

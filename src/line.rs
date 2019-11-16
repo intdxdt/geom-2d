@@ -11,8 +11,6 @@ use bbox_2d::MBR;
 use std::fmt::{Display, Formatter, Error};
 
 
-
-
 #[derive(Clone, Debug)]
 pub struct LineString {
     pub coordinates: Vec<Point>,
@@ -32,14 +30,18 @@ impl LineString {
     }
 
     pub fn wkt(&self) -> String {
-        "LineString".into()
+        format!("LINESTRING({})", self.coordinates
+            .iter()
+            .map(|pt| pt.fmt_xy())
+            .collect::<Vec<_>>()
+            .join(","))
     }
 }
 
 
-impl Display for LineString{
+impl Display for LineString {
     fn fmt(&self, f: &mut Formatter<'_>) -> Result<(), Error> {
-        write!(f, "{}",  self.wkt())
+        write!(f, "{}", self.wkt())
     }
 }
 
