@@ -1,7 +1,7 @@
 use crate::{LineString, Point};
 
 #[derive(Clone, Debug)]
-pub struct LinearRing(LineString);
+pub struct LinearRing(pub LineString);
 
 impl LinearRing {
     ///New linear ring
