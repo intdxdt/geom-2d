@@ -23,6 +23,12 @@ impl Polygon {
     }
 }
 
+impl std::fmt::Display for Polygon {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> Result<(), std::fmt::Error> {
+        write!(f, "{}", self.wkt())
+    }
+}
+
 
 //polygon lnr_rings
 fn lnr_rings(coordinates: &[Vec<Point>]) -> Vec<LinearRing> {

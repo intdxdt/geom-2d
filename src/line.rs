@@ -8,7 +8,6 @@ use crate::{
 };
 use crate::mono::NULL_INDEX;
 use bbox_2d::MBR;
-use std::fmt::{Display, Formatter, Error};
 
 
 #[derive(Clone, Debug)]
@@ -51,8 +50,8 @@ impl LineString {
 }
 
 
-impl Display for LineString {
-    fn fmt(&self, f: &mut Formatter<'_>) -> Result<(), Error> {
+impl std::fmt::Display for LineString {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> Result<(), std::fmt::Error> {
         write!(f, "{}", self.wkt())
     }
 }
