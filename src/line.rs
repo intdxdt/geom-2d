@@ -20,6 +20,18 @@ pub struct LineString {
 }
 
 impl LineString {
+    ///New LineString
+    pub fn new(coords: &[Point]) -> LineString {
+        let mut coordinates = Vec::with_capacity(coords.len());
+        coordinates.extend_from_slice(coords);
+        if coordinates.len() < 2 {
+            panic!("a linestring must have at least 2 coordinates");
+        }
+        let (bbox, chains) = util::process_chains(&coordinates);
+        let index = RTree::load(chains.clone());
+        LineString { coordinates, bbox, chains, index }
+    }
+
     ///Geometry type
     pub fn geom_type(&self) -> GeoType {
         return GeoType::LineString;
@@ -42,20 +54,6 @@ impl LineString {
 impl Display for LineString {
     fn fmt(&self, f: &mut Formatter<'_>) -> Result<(), Error> {
         write!(f, "{}", self.wkt())
-    }
-}
-
-
-impl LineString {
-    fn new(coords: &[Point]) -> LineString {
-        let mut coordinates = Vec::with_capacity(coords.len());
-        coordinates.extend_from_slice(coords);
-        if coordinates.len() < 2 {
-            panic!("a linestring must have at least 2 coordinates");
-        }
-        let (bbox, chains) = util::process_chains(&coordinates);
-        let index = RTree::load(chains.clone());
-        LineString { coordinates, bbox, chains, index }
     }
 }
 

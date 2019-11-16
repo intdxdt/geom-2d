@@ -1,6 +1,8 @@
 pub mod wkt;
 pub mod point;
 pub mod line;
+pub mod ring;
+pub mod polygon;
 pub mod mono;
 pub mod util;
 
@@ -8,6 +10,7 @@ pub use coordinate::Coordinate;
 pub use crate::point::{Point, Points};
 pub use crate::wkt::read_wkt;
 pub use crate::line::LineString;
+pub use crate::ring::LinearRing;
 use crate::mono::MonoMBR;
 use bbox_2d::MBR;
 
