@@ -1,12 +1,15 @@
-
+pub mod wkt;
 pub mod point;
 pub mod line;
 pub mod mono;
+pub mod util;
 
-
-pub use point ::Point;
 pub use coordinate::Coordinate;
-use mono::MonoMBR;
+pub use crate::point::{Point, Points};
+pub use crate::wkt::read_wkt;
+pub use crate::line::LineString;
+use crate::mono::MonoMBR;
+use bbox_2d::MBR;
 
 pub enum GeoType {
     Point,
@@ -14,6 +17,18 @@ pub enum GeoType {
     LineString,
     Polygon,
     Unknown,
+}
+
+pub trait Geometry {
+    fn bbox(&self) -> MBR;
+    fn as_linear(&self) -> Vec<LineString>;
+
+    fn intersects(&self, other : &dyn Geometry) -> bool;
+    //	fn Intersection(Geometry) []Point
+//	fn Distance(Geometry) float64
+//	fn Type() GeoType
+    fn wkt(&self) -> String;
+//	fn Geometry() Geometry
 }
 
 #[cfg(test)]

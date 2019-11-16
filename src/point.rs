@@ -256,7 +256,7 @@ impl From<&Vec<f64>> for Point {
 
 impl<T> From<Vec<[T; 2]>> for Points where T: NumCast + Copy {
     fn from(items: Vec<[T; 2]>) -> Self {
-        let mut points = vec![];
+        let mut points = Vec::with_capacity(items.len());
         for array in items {
             points.push(array.into())
         }

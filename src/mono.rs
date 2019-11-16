@@ -1,28 +1,31 @@
 use rstar::{AABB, RTreeObject, PointDistance};
 use bbox_2d::MBR;
 use crate::Point;
+use std::fmt::{Display, Formatter, Error};
+
+pub const NULL_INDEX: i32 = -9;
 
 #[derive(Copy, Clone, Debug)]
 pub struct MonoMBR {
     pub mbr: MBR,
-    pub i: usize,
-    pub j: usize,
+    pub i: i32,
+    pub j: i32,
 }
 
 impl MonoMBR {
-    pub fn new(a: Point, b: Point, i: usize, j: usize) -> MonoMBR {
-        MonoMBR { mbr: MBR::new_from_bounds(a.as_array(), b.as_array()), i, j }
+    pub fn new(a: Point, b: Point) -> MonoMBR {
+        MonoMBR::new_mono(MBR::new_from_bounds(a.as_array(), b.as_array()))
     }
 
     pub fn new_mono(mbr: MBR) -> MonoMBR {
-        MonoMBR { mbr, i: 0, j: 0 }
+        MonoMBR { mbr,i: NULL_INDEX, j: NULL_INDEX }
     }
 
     pub fn new_default() -> MonoMBR {
         MonoMBR { mbr: MBR::new_default(), i: 0, j: 0 }
     }
 
-    pub fn bbox(&self, other: &Self) -> &MBR {
+    pub fn bbox(&self) -> &MBR {
         &self.mbr
     }
 
@@ -43,6 +46,12 @@ impl MonoMBR {
     }
 }
 
+impl Display for MonoMBR{
+    fn fmt(&self, f: &mut Formatter<'_>) -> Result<(), Error> {
+        write!(f, "{}",  self.wkt())
+    }
+}
+
 impl PartialEq for MonoMBR {
     fn eq(&self, other: &Self) -> bool {
         self.equals(other)
@@ -51,7 +60,7 @@ impl PartialEq for MonoMBR {
 
 impl From<AABB<Point>> for MonoMBR {
     fn from(aab: AABB<Point>) -> Self {
-        MonoMBR::new(aab.lower(), aab.upper(), 0, 0)
+        MonoMBR::new(aab.lower(), aab.upper())
     }
 }
 
@@ -65,6 +74,6 @@ impl RTreeObject for MonoMBR {
 
 impl PointDistance for MonoMBR {
     fn distance_2(&self, pt: &Point) -> f64 {
-        self.distance_square(&MonoMBR::new(*pt, *pt, 0, 0))
+        self.distance_square(&MonoMBR::new(*pt, *pt))
     }
 }
