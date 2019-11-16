@@ -14,6 +14,7 @@ pub use crate::ring::LinearRing;
 use crate::mono::MonoMBR;
 use bbox_2d::MBR;
 
+#[derive(Copy, Clone, Debug)]
 pub enum GeoType {
     Point,
     Segment,

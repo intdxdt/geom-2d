@@ -1,5 +1,6 @@
 use crate::{LineString, Point};
 
+#[derive(Clone, Debug)]
 pub struct LinearRing(LineString);
 
 impl LinearRing {
@@ -87,3 +88,7 @@ fn is_ring(coordinates: &Vec<Point>) -> bool {
         coordinates.first().unwrap().equals(coordinates.last().unwrap())
     }
 }
+
+
+
+

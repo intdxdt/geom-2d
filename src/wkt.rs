@@ -1,5 +1,6 @@
 use crate::{GeoType, Point};
 
+#[derive(Clone, Debug)]
 pub struct WKT {
     pub geom_type: GeoType,
     pub coordinates: Vec<Vec<Point>>,
