@@ -56,7 +56,7 @@ impl Geometry for Polygon {
         GeomType::Polygon
     }
 
-    fn intersects<T>(&self, other: T) -> bool where T: Geometry {
+    fn intersects<T>(&self, other: &T) -> bool where T: Geometry {
         unimplemented!()
     }
 }

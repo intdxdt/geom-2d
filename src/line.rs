@@ -144,7 +144,7 @@ impl Geometry for LineString {
         GeomType::LineString
     }
 
-    fn intersects<T: Geometry>(&self, other: T) -> bool {
+    fn intersects<T: Geometry>(&self, other: &T) -> bool {
         let mut bln = false;
         let other_lns = other.as_linear();
         let shell = &other_lns[0];

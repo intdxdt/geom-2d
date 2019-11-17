@@ -380,7 +380,7 @@ impl Geometry for Point {
         GeomType::Point
     }
 
-    fn intersects<T>(&self, other: T) -> bool where T: Geometry {
+    fn intersects<T>(&self, other: &T) -> bool where T: Geometry {
         self.as_linear()[0].intersects(other)
     }
 }

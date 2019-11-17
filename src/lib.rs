@@ -12,6 +12,7 @@ pub use coordinate::Coordinate;
 pub use crate::point::{Point, Points};
 pub use crate::line::LineString;
 pub use crate::ring::LinearRing;
+pub use crate::polygon::Polygon;
 pub use crate::wkt::parse_wkt;
 pub use crate::chull::convex_hull;
 use crate::mono::MonoMBR;
@@ -65,7 +66,7 @@ pub trait Geometry {
     fn as_linear(&self) -> Vec<LineString>;
     fn wkt_string(&self) -> String;
     fn geom_type(&self) -> GeomType;
-    fn intersects<T: Geometry>(&self, other: T) -> bool;
+    fn intersects<T: Geometry>(&self, other: &T) -> bool;
     //fn intersects(&self, other : &dyn Geometry) -> bool;
     //	fn Intersection(Geometry) []Point
     //	fn Distance(Geometry) float64

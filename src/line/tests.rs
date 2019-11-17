@@ -1,8 +1,7 @@
 use super::*;
 use math_util::{round, Feq, SQRT_2, FRAC_PI_4};
 use rstar::Point as RStarPoint;
-use crate::{Point, Points, Coordinate, parse_wkt, convex_hull};
-use crate::polygon::Polygon;
+use crate::{Point, Points,Polygon, GeomType, Geometry, Coordinate, parse_wkt, convex_hull};
 
 #[test]
 fn test_linestring() {
@@ -28,5 +27,11 @@ fn test_linestring() {
     let poly :Polygon = poly_wkt.into();
     println!("{}", poly);
 
+    let wkt0 = "LINESTRING ( 300 275, 300 300, 308 312, 337 314, 340 345, 325 350, 300 375, 350 400, 375 375, 400 375, 415 429, 409 455, 500 475, 539 470, 575 450, 582 413, 575 350, 610 353, 675 400, 684 345, 750 350, 736 321 )";
+    let wkt1 = "LINESTRING ( 338 247, 389 319, 414 350, 450 375, 475 425, 500 450, 525 425, 525 375, 589 376, 575 300, 625 275, 694 311, 701 412, 647 436 )";
+    let g0:LineString = wkt0.into();
+    let g1:LineString = wkt1.into();
+    let bln = g0.intersects(&g1);
+    println!("g0 intersects g1 = {}", bln);
 
 }
