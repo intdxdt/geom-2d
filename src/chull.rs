@@ -1,53 +1,42 @@
 use crate::Point;
 
-// description computes the convex hull of a point set.
-// param points An array of [X, Y] coordinates
-//fn convex_hull(points :&[Point]) -> Vec<Point> {
-//	let pnts = points.ShallowClone();
-//	//trivial case less than three coordinates
-//	if points.len() < 3 {
-//		return pnts
-//	}
-//	let N = pnts.len();
-//
-//	pnts.sort();
-//
-//	let lower = makeCoords(pnts, 0, N/2);
-//	let upper = makeCoords(pnts, 0, N/2);
-//
-//	lower = buildHull(lower, pnts, 0, 1, N);
-//	upper = buildHull(upper, pnts, N-1, -1, -1);
-//
-//	upper.Pop();
-//	lower.Pop();
-//
-//	for _, v := range upper.Idxs {
-//		lower.Idxs = append(lower.Idxs, v)
-//	}
-//
-//	return lower
-//}
+/// Computes the convex hull of a point set.
+pub fn convex_hull(points: &[Point]) -> Vec<Point> {
+    let mut pnts = Vec::with_capacity(points.len());
+    pnts.extend_from_slice(points);
+    //trivial case less than three coordinates
+    if pnts.len() < 3 {
+        return pnts;
+    }
+    let n = pnts.len() as i32;
 
-////build boundary
-//fn buildHull(hb, points Coords, start, step, stop int) Coords {
-//	let pnt *Point
-//	let i = start
-//	let idx int
-//	for i != stop {
-//		idx, pnt = points.Idxs[i], points.Pt(i)
-//		//pnt.CrossProduct(boundary[n - 2], boundary[n - 1])
-//		for n := hb.len(); n >= 2 && pnt.SideOf(hb.Pt(n-2), hb.Pt(n-1)).IsOnOrRight(); n = hb.len() {
-//			hb.Pop()
-//		}
-//		hb.Idxs = append(hb.Idxs, idx)
-//		i += step
-//	}
-//	return hb
-//}
-//
-////Coords returns a copy of linestring coordinates
-//fn makeCoords(coordinates Coords, i, j int) Coords {
-//	let o = Coords{Pnts: coordinates.Pnts, Idxs: make([]int, 0, j-i+1)}
-//	return o
-//}
-//
+    pnts.sort();
+
+    let mut lower = Vec::with_capacity((n/2 + 1) as usize);
+    let mut upper = Vec::with_capacity((n/2 + 1) as usize);
+
+    build_hull(&mut lower, &mut pnts, 0, 1, n);
+    build_hull(&mut upper, &mut pnts, n - 1, -1, -1);
+
+    upper.pop();
+    lower.pop();
+
+    lower.extend_from_slice(&upper);
+    lower
+}
+
+///build boundary
+fn build_hull(hb: &mut Vec<Point>, points: &mut Vec<Point>, start: i32, step: i32, stop: i32) {
+    let mut i = start;
+    while i != stop {
+        let pt = points[i as usize];
+        let mut n = hb.len();
+        while n >= 2 && pt.side_of(hb[n - 2], hb[n - 1]).is_on_or_right() {
+            hb.pop();
+            n = hb.len();
+        }
+        hb.push(pt);
+        i += step
+    }
+}
+

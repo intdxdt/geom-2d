@@ -9,9 +9,10 @@ pub mod chull;
 
 pub use coordinate::Coordinate;
 pub use crate::point::{Point, Points};
-pub use crate::wkt::read_wkt;
 pub use crate::line::LineString;
 pub use crate::ring::LinearRing;
+pub use crate::wkt::read_wkt;
+pub use crate::chull::convex_hull;
 use crate::mono::MonoMBR;
 use bbox_2d::MBR;
 

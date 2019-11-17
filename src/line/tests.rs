@@ -1,7 +1,7 @@
 use super::*;
 use math_util::{round, Feq, SQRT_2, FRAC_PI_4};
 use rstar::Point as RStarPoint;
-use crate::{Point, Points, Coordinate, read_wkt};
+use crate::{Point, Points, Coordinate, read_wkt, convex_hull};
 use crate::polygon::Polygon;
 
 #[test]
@@ -15,12 +15,10 @@ fn test_linestring() {
     let pts_open = vec![[5.538, 8.467], [5.498, 8.559], [5.858, 8.987], [6.654, 8.638], [6.549, 8.024], [5.765, 8.082]];
 
     let mut pts: Points = pts.into();
-    let mut coords = pts.points.clone();
-    coords.sort();
+    let mut coords = wkt.coordinates[0].clone();
+    let ch = convex_hull(&coords);
 
-    println!("{}", coords[0]);
-
-    let ln = Polygon::new(&[wkt.coordinates[0].clone()]);
+    let ln = Polygon::new(&[ch]);
 //    println!("{}", ln);
 //    for o in ln.chains {
 //        println!("{}", o)
