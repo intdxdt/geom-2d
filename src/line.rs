@@ -1,5 +1,5 @@
 use rtree_2d::RTree;
-use crate::{Point, Coordinate, segment, parse_wkt};
+use crate::{Point, Coordinate, segment, parse_wkt, LinearRing};
 use crate::{
     util,
     MonoMBR,
@@ -91,6 +91,36 @@ impl LineString {
         return bln;
     }
 
+    ///LineSting intersects polygon rings
+    fn intersects_polygon(&self, lns: &Vec<LineString>) -> bool {
+        let mut intersects_hole = false;
+        let mut in_hole = false;
+        let rings = lns.iter().map(|ln| LinearRing(ln.clone())).collect::<Vec<LinearRing>>();
+        let shell = &rings[0];
+
+        let mut bln = self.intersects(shell.line_string());
+        //if false, check if shell contains line
+        if !bln {
+            bln = shell.contains_line(self);
+            //inside shell, does it touch hole boundary ?
+            let mut i = 1;
+            while bln && !intersects_hole && i < rings.len() {
+                intersects_hole = self.intersects(rings[i].line_string());
+                i += 1;
+            }
+            //inside shell but does not touch the boundary of holes
+            if bln && !intersects_hole {
+                //check if completely contained in hole
+                let mut i = 1;
+                while !in_hole && i < rings.len() {
+                    in_hole = rings[i].contains_line(self);
+                    i += 1;
+                }
+            }
+            bln = bln && !in_hole
+        }
+        bln
+    }
 
     ///Segments in range
     fn segs_in_range(&self, seglist: &mut Vec<Point>, inter: &MBR, i: i32, j: i32) {
@@ -151,11 +181,9 @@ impl Geometry for LineString {
 
         if self.bbox.mbr.disjoint(&shell.bbox.mbr) {
             bln = false
-        }
-//        else if other.geom_type().is_polygon() {
-//            bln = self.intersects_polygon(other_lns)
-//        }
-        else {
+        } else if other.geom_type().is_polygon() {
+            bln = self.intersects_polygon(&other_lns)
+        } else {
             bln = self.intersects_linestring(shell)
         }
         bln
@@ -168,7 +196,7 @@ impl From<&str> for LineString {
         let o = parse_wkt(wkt_str);
         match o.geom_type {
             GeomType::LineString => {
-                LineString::new(&o.coordinates[0] )
+                LineString::new(&o.coordinates[0])
             }
             _ => {
                 let msg = if o.success {
