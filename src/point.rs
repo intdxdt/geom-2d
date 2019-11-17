@@ -7,6 +7,7 @@ use robust_orientation::orientation_2d;
 use side_rel::Side;
 use serde::export::Formatter;
 use serde::export::fmt::Error;
+use std::cmp::Ordering;
 
 
 /// Point is a 2D (x:float, y:float) point type.
@@ -232,7 +233,6 @@ impl Point {
 }
 
 
-
 pub struct Points {
     pub points: Vec<Point>
 }
@@ -283,6 +283,22 @@ impl Eq for Point {}
 impl PartialEq for Point {
     fn eq(&self, other: &Self) -> bool {
         self.equals(other)
+    }
+}
+
+impl Ord for Point {
+    fn cmp(&self, other: &Self) -> Ordering {
+        let mut d = self.x - other.x;
+        if d.feq(0.0) {
+            d = self.y - other.y;
+        }
+        if d.feq(0.0) {
+            Ordering::Equal
+        } else if d < 0.0 {
+            Ordering::Less
+        } else {
+            Ordering::Greater
+        }
     }
 }
 

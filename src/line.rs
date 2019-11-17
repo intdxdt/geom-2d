@@ -30,6 +30,11 @@ impl LineString {
         let index = RTree::load(chains.clone());
         LineString { coordinates, bbox, chains, index }
     }
+    
+    ///Linestring from point
+    pub fn new_from_point(pt: Point) -> LineString {
+        LineString::new(&[pt, pt])
+    }
 
     ///Geometry type
     pub fn geom_type(&self) -> GeoType {

@@ -5,6 +5,7 @@ pub mod ring;
 pub mod polygon;
 pub mod mono;
 pub mod util;
+pub mod chull;
 
 pub use coordinate::Coordinate;
 pub use crate::point::{Point, Points};
