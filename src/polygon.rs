@@ -1,4 +1,4 @@
-use crate::{LinearRing, Point, Geometry, LineString};
+use crate::{LinearRing, Point, Geometry, LineString, GeomType};
 use bbox_2d::MBR;
 
 #[derive(Clone, Debug)]
@@ -44,6 +44,14 @@ impl Geometry for Polygon {
 
     fn wkt_string(&self) -> String {
         self.wkt()
+    }
+
+    fn geom_type(&self) -> GeomType {
+        GeomType::Polygon
+    }
+
+    fn intersects<T>(&self, other: T) -> bool where T: Geometry {
+        unimplemented!()
     }
 }
 

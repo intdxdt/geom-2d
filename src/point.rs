@@ -8,7 +8,7 @@ use side_rel::Side;
 use serde::export::Formatter;
 use serde::export::fmt::Error;
 use std::cmp::Ordering;
-use crate::{Geometry, LineString};
+use crate::{Geometry, LineString, GeomType};
 use bbox_2d::MBR;
 
 
@@ -34,8 +34,8 @@ impl Point {
 
     ///Geometry Type
     #[inline]
-    pub fn geo_type(&self) -> crate::GeoType {
-        crate::GeoType::Point
+    pub fn geo_type(&self) -> crate::GeomType {
+        crate::GeomType::Point
     }
 
     ///Operator : equals
@@ -258,6 +258,7 @@ impl<T> From<[T; 2]> for Point where T: NumCast + Copy {
     }
 }
 
+
 impl From<&[f64]> for Point {
     fn from(slice: &[f64]) -> Self {
         Point { x: slice[0], y: slice[1] }
@@ -343,6 +344,14 @@ impl Geometry for Point {
 
     fn wkt_string(&self) -> String {
         format!("{}", self)
+    }
+
+    fn geom_type(&self) -> GeomType {
+        GeomType::Point
+    }
+
+    fn intersects<T>(&self, other: T) -> bool where T: Geometry {
+        self.as_linear()[0].intersects(other)
     }
 }
 

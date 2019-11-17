@@ -2,12 +2,13 @@ use rtree_2d::RTree;
 use crate::{Point, Coordinate};
 use crate::{
     MonoMBR,
-    GeoType,
+    GeomType,
     Geometry,
 };
 use crate::mono::NULL_INDEX;
 use bbox_2d::MBR;
 use std::fmt::{Display, Formatter, Error};
+use math_util::Feq;
 
 const MINI_MONO_SIZE: i32 = 8;
 
@@ -101,8 +102,20 @@ fn xy_mono_box(coordinates: &Vec<Point>, mbox: &mut MonoMBR, root_bbox: &mut Mon
 
 ///find the sign of value -1, 0 , 1
 #[inline]
-fn xy_sign(v: f64) -> i32 {
+pub fn xy_sign(v: f64) -> i32 {
     if v > 0. { 1 } else if v < 0. { -1 } else { 0 }
+}
+
+#[inline]
+///Snap value to zero
+pub fn snap_to_zero(x: f64) -> f64 {
+    if x.feq(0.0) { 0.0 } else { x }
+}
+
+#[inline]
+///Snap value to zero or one
+pub fn snap_to_zero_or_one(x: f64) -> f64 {
+    if x.feq(0.0) { 0.0 } else if x.feq(1.0) { 1.0 } else { x }
 }
 
 

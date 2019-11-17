@@ -1,8 +1,8 @@
-use crate::{GeoType, Point};
+use crate::{GeomType, Point};
 
 #[derive(Clone, Debug)]
 pub struct WKT {
-    pub geom_type: GeoType,
+    pub geom_type: GeomType,
     pub coordinates: Vec<Vec<Point>>,
 }
 
@@ -20,17 +20,17 @@ pub fn read_wkt(s: &str) -> WKT {
 
     let coordinates = match wkt.items.pop().unwrap() {
         wkt::Geometry::Point(wkt::types::Point(coords)) => {
-            geom_type = GeoType::Point;
+            geom_type = GeomType::Point;
             let c = coords.unwrap();
             vec![vec![Point::new(c.x, c.y)]]
         }
         wkt::Geometry::LineString(wkt::types::LineString(coords)) => {
-            geom_type = GeoType::LineString;
+            geom_type = GeomType::LineString;
             let shell = extract_coordinates(&coords);
             vec![shell]
         }
         wkt::Geometry::Polygon(wkt::types::Polygon(lines)) => {
-            geom_type = GeoType::Polygon;
+            geom_type = GeomType::Polygon;
             let mut shells = vec![];
             for ln in lines {
                 let shell  = extract_coordinates(&ln.0);

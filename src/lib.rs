@@ -6,6 +6,7 @@ pub mod polygon;
 pub mod mono;
 pub mod util;
 pub mod chull;
+pub mod segment;
 
 pub use coordinate::Coordinate;
 pub use crate::point::{Point, Points};
@@ -17,7 +18,7 @@ use crate::mono::MonoMBR;
 use bbox_2d::MBR;
 
 #[derive(Copy, Clone, Debug)]
-pub enum GeoType {
+pub enum GeomType {
     Point,
     Segment,
     LineString,
@@ -25,14 +26,36 @@ pub enum GeoType {
     Unknown,
 }
 
+impl GeomType {
+    fn is_point(&self) -> bool {
+        match self {
+            GeomType::Point => true,
+            _ => false
+        }
+    }
+    fn is_line_string(&self) -> bool {
+        match self {
+            GeomType::LineString => true,
+            _ => false
+        }
+    }
+    fn is_polygon(&self) -> bool {
+        match self {
+            GeomType::Polygon => true,
+            _ => false
+        }
+    }
+}
+
 pub trait Geometry {
     fn bbox(&self) -> MBR;
     fn as_linear(&self) -> Vec<LineString>;
     fn wkt_string(&self) -> String;
+    fn geom_type(&self) -> GeomType;
+    fn intersects<T: Geometry>(&self, other: T) -> bool;
     //fn intersects(&self, other : &dyn Geometry) -> bool;
     //	fn Intersection(Geometry) []Point
     //	fn Distance(Geometry) float64
-    //	fn Type() GeoType
     //	fn Geometry() Geometry
 }
 

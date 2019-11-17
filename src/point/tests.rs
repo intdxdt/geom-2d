@@ -18,7 +18,7 @@ fn test_point() {
     let pa = pt![3, 4];
     assert_eq!(
         std::mem::discriminant(&pa.geo_type()),
-        std::mem::discriminant(&crate::GeoType::Point)
+        std::mem::discriminant(&crate::GeomType::Point)
     );
 
     let mut m_pa = Point::new_from_array(&[3.0, 4.0]);

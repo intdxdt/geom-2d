@@ -1,4 +1,4 @@
-use rstar::{AABB, RTreeObject, PointDistance};
+use rtree_2d::{AABB, RTreeObject, PointDistance};
 use bbox_2d::MBR;
 use crate::Point;
 use std::fmt::{Display, Formatter, Error};
