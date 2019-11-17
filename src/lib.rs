@@ -28,13 +28,12 @@ pub enum GeoType {
 pub trait Geometry {
     fn bbox(&self) -> MBR;
     fn as_linear(&self) -> Vec<LineString>;
-
-    fn intersects(&self, other : &dyn Geometry) -> bool;
+    fn wkt_string(&self) -> String;
+    //fn intersects(&self, other : &dyn Geometry) -> bool;
     //	fn Intersection(Geometry) []Point
-//	fn Distance(Geometry) float64
-//	fn Type() GeoType
-    fn wkt(&self) -> String;
-//	fn Geometry() Geometry
+    //	fn Distance(Geometry) float64
+    //	fn Type() GeoType
+    //	fn Geometry() Geometry
 }
 
 #[cfg(test)]

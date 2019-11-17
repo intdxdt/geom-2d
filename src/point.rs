@@ -8,6 +8,8 @@ use side_rel::Side;
 use serde::export::Formatter;
 use serde::export::fmt::Error;
 use std::cmp::Ordering;
+use crate::{Geometry, LineString};
+use bbox_2d::MBR;
 
 
 /// Point is a 2D (x:float, y:float) point type.
@@ -327,6 +329,20 @@ impl Coordinate for Point {
             1 => &mut self.y,
             _ => unreachable!(),
         }
+    }
+}
+
+impl Geometry for Point {
+    fn bbox(&self) -> MBR {
+        MBR::new_from_pt(self.as_array())
+    }
+
+    fn as_linear(&self) -> Vec<LineString> {
+        vec![LineString::new_from_point(*self)]
+    }
+
+    fn wkt_string(&self) -> String {
+        format!("{}", self)
     }
 }
 

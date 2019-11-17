@@ -55,6 +55,20 @@ impl LineString {
 }
 
 
+impl Geometry for LineString {
+    fn bbox(&self) -> MBR {
+        self.bbox.mbr
+    }
+
+    fn as_linear(&self) -> Vec<LineString> {
+        vec![self.clone()]
+    }
+
+    fn wkt_string(&self) -> String {
+        self.wkt()
+    }
+}
+
 impl std::fmt::Display for LineString {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> Result<(), std::fmt::Error> {
         write!(f, "{}", self.wkt())

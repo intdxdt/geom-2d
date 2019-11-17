@@ -1,4 +1,5 @@
-use crate::{LinearRing, Point};
+use crate::{LinearRing, Point, Geometry, LineString};
+use bbox_2d::MBR;
 
 #[derive(Clone, Debug)]
 pub struct Polygon(pub Vec<LinearRing>);
@@ -6,6 +7,14 @@ pub struct Polygon(pub Vec<LinearRing>);
 impl Polygon {
     pub fn new(coordinates: &[Vec<Point>]) -> Polygon {
         Polygon(lnr_rings(coordinates))
+    }
+
+    pub fn shell(&self) -> &LinearRing {
+        &self.0[0]
+    }
+
+    pub fn holes(&self) -> &[LinearRing] {
+            &self.0[1..]
     }
 
     pub fn wkt(&self) -> String {
@@ -20,6 +29,21 @@ impl Polygon {
             })
             .collect::<Vec<_>>()
             .join("),("))
+    }
+}
+
+
+impl Geometry for Polygon {
+    fn bbox(&self) -> MBR {
+        self.shell().0.bbox.mbr
+    }
+
+    fn as_linear(&self) -> Vec<LineString> {
+        self.0.iter().map(|r| r.0.clone()).collect()
+    }
+
+    fn wkt_string(&self) -> String {
+        self.wkt()
     }
 }
 
