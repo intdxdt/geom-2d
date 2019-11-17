@@ -4,11 +4,25 @@ use crate::{GeomType, Point};
 pub struct WKT {
     pub geom_type: GeomType,
     pub coordinates: Vec<Vec<Point>>,
+    pub success: bool,
+    pub message: String,
 }
 
-pub fn read_wkt(s: &str) -> WKT {
-    let geom_type ;
-    let mut wkt = wkt::Wkt::from_str(s).ok().unwrap();
+pub fn parse_wkt(s: &str) -> WKT {
+    let geom_type;
+    let mut wkt;
+    let mut res = wkt::Wkt::from_str(s);
+    match res {
+        Ok(o) => wkt = o,
+        Err(err) => {
+            return WKT {
+                geom_type: GeomType::Unknown,
+                coordinates: vec![],
+                success: false,
+                message: err.into(),
+            };
+        }
+    };
 
     let extract_coordinates = |coords: &Vec<wkt::types::Coord<f64>>| {
         let mut shell = vec![];
@@ -33,7 +47,7 @@ pub fn read_wkt(s: &str) -> WKT {
             geom_type = GeomType::Polygon;
             let mut shells = vec![];
             for ln in lines {
-                let shell  = extract_coordinates(&ln.0);
+                let shell = extract_coordinates(&ln.0);
                 shells.push(shell);
             }
             shells
@@ -41,7 +55,12 @@ pub fn read_wkt(s: &str) -> WKT {
         _ => unreachable!(),
     };
 
-    WKT { geom_type, coordinates }
+    WKT {
+        geom_type,
+        coordinates,
+        success: true,
+        message: String::new(),
+    }
 }
 
 

@@ -8,7 +8,7 @@ use side_rel::Side;
 use serde::export::Formatter;
 use serde::export::fmt::Error;
 use std::cmp::Ordering;
-use crate::{Geometry, LineString, GeomType};
+use crate::{Geometry, LineString, GeomType, parse_wkt};
 use bbox_2d::MBR;
 
 
@@ -28,8 +28,13 @@ impl Point {
     }
 
     ///Construct new point from array
-    pub fn new_from_array(a: &[f64; 2]) -> Point {
-        Point { x: a[0], y: a[1] }
+    pub fn from_array(a: [f64; 2]) -> Point {
+        a.into()
+    }
+
+    ///Construct new point from wkt
+    pub fn from_wkt(s: &str) -> Point {
+        s.into()
     }
 
     ///Geometry Type
@@ -234,11 +239,9 @@ impl Point {
     }
 }
 
-
 pub struct Points {
     pub points: Vec<Point>
 }
-
 
 impl std::fmt::Display for Point {
     fn fmt(&self, f: &mut Formatter<'_>) -> Result<(), Error> {
@@ -254,6 +257,12 @@ impl<T> From<(T, T)> for Point where T: NumCast + Copy {
 
 impl<T> From<[T; 2]> for Point where T: NumCast + Copy {
     fn from(array: [T; 2]) -> Self {
+        Point { x: num::cast(array[0]).unwrap(), y: num::cast(array[1]).unwrap() }
+    }
+}
+
+impl<T> From<&[T; 2]> for Point where T: NumCast + Copy {
+    fn from(array: &[T; 2]) -> Self {
         Point { x: num::cast(array[0]).unwrap(), y: num::cast(array[1]).unwrap() }
     }
 }
@@ -278,6 +287,27 @@ impl<T> From<Vec<[T; 2]>> for Points where T: NumCast + Copy {
             points.push(array.into())
         }
         Points { points }
+    }
+}
+
+
+impl From<&str> for Point {
+    fn from(wkt_str: &str) -> Self {
+        let o = parse_wkt(wkt_str);
+        match o.geom_type {
+            GeomType::Point => {
+                let c = o.coordinates[0][0];
+                Point { x: c.x, y: c.y }
+            }
+            _ => {
+                let msg = if o.success {
+                    format!("invalid wkt string, expected POINT, got : {}", o.geom_type)
+                } else {
+                    format!("parser error : {}", o.message)
+                };
+                panic!(msg)
+            }
+        }
     }
 }
 
@@ -339,7 +369,7 @@ impl Geometry for Point {
     }
 
     fn as_linear(&self) -> Vec<LineString> {
-        vec![LineString::new_from_point(*self)]
+        vec![LineString::from_point(*self)]
     }
 
     fn wkt_string(&self) -> String {

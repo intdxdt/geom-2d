@@ -4,7 +4,7 @@ use rstar::Point as RStarPoint;
 
 #[test]
 fn test_point() {
-    let a = pt![3, 4];
+    let a = Point::from_wkt("POINT(3 4)");
     assert_eq!(a.val(0), 3.);
     assert_eq!(a.val(1), 4.);
     let mut b = pt![4, 5];
@@ -21,7 +21,7 @@ fn test_point() {
         std::mem::discriminant(&crate::GeomType::Point)
     );
 
-    let mut m_pa = Point::new_from_array(&[3.0, 4.0]);
+    let mut m_pa = Point::from_array([3.0, 4.0]);
     let pb = Point::new(3.0, 4.0);
     let pc = Point::new(5.0, 4.0);
 
@@ -54,7 +54,7 @@ fn test_distance_magnitude() {
     assert_eq!(pt.distance(&Point { x: 4., y: 5. }), SQRT_2);
     assert_eq!(pt.square_distance(&Point { x: 4., y: 5. }), 2.0);
 
-    let pts:Points = vec![[0, 0], [4, 3], [0, 0], [1, 1]].into();
+    let pts: Points = vec![[0, 0], [4, 3], [0, 0], [1, 1]].into();
 
     let a = pt![0, 0];
     let b = pt![4, 3];

@@ -1,12 +1,18 @@
-use crate::{LinearRing, Point, Geometry, LineString, GeomType};
+use crate::{LinearRing, Point, Geometry, LineString, GeomType, parse_wkt};
 use bbox_2d::MBR;
 
 #[derive(Clone, Debug)]
 pub struct Polygon(pub Vec<LinearRing>);
 
 impl Polygon {
+    ///Construct from coordinates
     pub fn new(coordinates: &[Vec<Point>]) -> Polygon {
         Polygon(lnr_rings(coordinates))
+    }
+
+    ///Construct from wkt
+    pub fn from_wkt(s: &str) -> Polygon {
+        s.into()
     }
 
     pub fn shell(&self) -> &LinearRing {
@@ -58,6 +64,25 @@ impl Geometry for Polygon {
 impl std::fmt::Display for Polygon {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> Result<(), std::fmt::Error> {
         write!(f, "{}", self.wkt())
+    }
+}
+
+impl From<&str> for Polygon {
+    fn from(wkt_str: &str) -> Self {
+        let o = parse_wkt(wkt_str);
+        match o.geom_type {
+            GeomType::LineString => {
+                Polygon::new(&o.coordinates)
+            }
+            _ => {
+                let msg = if o.success {
+                    format!("invalid wkt string, expected POLYGON, got : {}", o.geom_type)
+                } else {
+                    format!("parser error : {}", o.message)
+                };
+                panic!(msg)
+            }
+        }
     }
 }
 
