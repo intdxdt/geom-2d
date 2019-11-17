@@ -1,14 +1,8 @@
-use rtree_2d::RTree;
-use crate::{Point, Coordinate};
-use crate::{
-    MonoMBR,
-    GeomType,
-    Geometry,
-};
-use crate::mono::NULL_INDEX;
 use bbox_2d::MBR;
-use std::fmt::{Display, Formatter, Error};
 use math_util::Feq;
+use rtree_2d::RTree;
+use crate::mono::NULL_INDEX;
+use crate::{Point, Coordinate, MonoMBR, GeomType, Geometry};
 
 const MINI_MONO_SIZE: i32 = 8;
 

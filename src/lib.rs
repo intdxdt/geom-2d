@@ -28,19 +28,19 @@ pub enum GeomType {
 }
 
 impl GeomType {
-    fn is_point(&self) -> bool {
+    pub fn is_point(&self) -> bool {
         match self {
             GeomType::Point => true,
             _ => false
         }
     }
-    fn is_line_string(&self) -> bool {
+    pub fn is_line_string(&self) -> bool {
         match self {
             GeomType::LineString => true,
             _ => false
         }
     }
-    fn is_polygon(&self) -> bool {
+    pub fn is_polygon(&self) -> bool {
         match self {
             GeomType::Polygon => true,
             _ => false

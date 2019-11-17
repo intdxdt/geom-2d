@@ -11,7 +11,7 @@ pub struct WKT {
 pub fn parse_wkt(s: &str) -> WKT {
     let geom_type;
     let mut wkt;
-    let mut res = wkt::Wkt::from_str(s);
+    let res = wkt::Wkt::from_str(s);
     match res {
         Ok(o) => wkt = o,
         Err(err) => {

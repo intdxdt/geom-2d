@@ -1,13 +1,7 @@
-use rtree_2d::RTree;
-use crate::{Point, Coordinate, segment, parse_wkt, LinearRing};
-use crate::{
-    util,
-    MonoMBR,
-    GeomType,
-    Geometry,
-};
-use crate::mono::NULL_INDEX;
 use bbox_2d::MBR;
+use rtree_2d::RTree;
+use crate::{Point, Coordinate, LinearRing, MonoMBR, GeomType, Geometry};
+use crate::{util, segment, parse_wkt};
 use rtree_2d::{RTreeObject, PointDistance, AABB, Envelope};
 
 
@@ -62,7 +56,6 @@ impl LineString {
         let mut bln = false;
         let mut othersegs = Vec::new();
         let mut selfsegs = Vec::new();
-        let mut ln_range = Vec::new();
 
         //var qrng *mbr.MBR
         //var qbox, ibox *mono.MBR
@@ -71,7 +64,7 @@ impl LineString {
         while !bln && i < in_range.len() {
             //search ln using ibox
             let ibox = in_range[i];
-            ln_range = other.index.search(&ibox.envelope());
+            let ln_range = other.index.search(&ibox.envelope());
 
             let mut q = 0;
             while !bln && q < ln_range.len() {
@@ -175,18 +168,16 @@ impl Geometry for LineString {
     }
 
     fn intersects<T: Geometry>(&self, other: &T) -> bool {
-        let mut bln = false;
         let other_lns = other.as_linear();
         let shell = &other_lns[0];
 
         if self.bbox.mbr.disjoint(&shell.bbox.mbr) {
-            bln = false
+            false
         } else if other.geom_type().is_polygon() {
-            bln = self.intersects_polygon(&other_lns)
+            self.intersects_polygon(&other_lns)
         } else {
-            bln = self.intersects_linestring(shell)
+            self.intersects_linestring(shell)
         }
-        bln
     }
 }
 
