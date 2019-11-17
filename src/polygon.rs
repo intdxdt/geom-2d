@@ -71,7 +71,7 @@ impl From<&str> for Polygon {
     fn from(wkt_str: &str) -> Self {
         let o = parse_wkt(wkt_str);
         match o.geom_type {
-            GeomType::LineString => {
+            GeomType::Polygon => {
                 Polygon::new(&o.coordinates)
             }
             _ => {
