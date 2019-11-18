@@ -52,7 +52,7 @@ impl LineString {
 //linear relate
 impl LineString {
     ///Checks if line intersects other{LineString}
-    fn intersects_linestring(&self, other: &LineString) -> bool {
+   pub  fn intersects_linestring(&self, other: &LineString) -> bool {
         let mut bln = false;
         let mut othersegs = Vec::new();
         let mut selfsegs = Vec::new();
@@ -85,7 +85,7 @@ impl LineString {
     }
 
     ///LineSting intersects polygon rings
-    fn intersects_polygon(&self, rings: &Vec<LinearRing>) -> bool {
+    pub fn intersects_polygon(&self, rings: &Vec<LinearRing>) -> bool {
         let mut intersects_hole = false;
         let mut in_hole = false;
 //        let rings = lns.iter().map(|ln| LinearRing(ln.clone())).collect::<Vec<LinearRing>>();
@@ -116,7 +116,7 @@ impl LineString {
     }
 
 
-    fn linear_intersection(&self, other: &LineString) -> Vec<Point> {
+    pub  fn linear_intersection(&self, other: &LineString) -> Vec<Point> {
         let mut ptset = BTreeSet::new();
         if self.bounds.mbr.disjoint(&other.bounds.mbr) {
             return Vec::new(); //disjoint
@@ -147,7 +147,7 @@ impl LineString {
 
 
     //line intersect polygon rings
-    fn intersection_polygon_rings(&self, rings: &Vec<LinearRing>) -> Vec<Point> {
+   pub  fn intersection_polygon_rings(&self, rings: &Vec<LinearRing>) -> Vec<Point> {
         let mut res = Vec::new();
         let shell = &rings[0];
         let mut ptset = BTreeSet::new();
@@ -159,11 +159,14 @@ impl LineString {
                 ptset.insert(spts[idx]);
             }
             //inside shell, does it touch hole boundary ?
-            for i in 0..rings.len() {
-                let hpts = self.linear_intersection(rings[i].line_string());
-                for idx in 0..hpts.len() {
-                    ptset.insert(hpts[idx]);
-                }
+            for hole in rings[1..].iter() {
+//                let hpts = self.linear_intersection(hole.line_string());
+                self.linear_intersection(hole.line_string())
+                    .iter()
+                    .for_each(|v| { ptset.insert(*v); });
+//                for idx in 0..hpts.len() {
+//                    ptset.insert(hpts[idx]);
+//                }
             }
 
             //check for all vertices
@@ -260,9 +263,15 @@ impl Geometry for LineString {
         } else if other.geom_type().is_polygon() {
             self.intersects_polygon(other.linear_rings())
         } else {
-            let other_lns = other.as_linear();
-            let shell = &other_lns[0];
-            self.intersects_linestring(shell)
+            //assume as_linear of other is > 1
+            let mut bln = false;
+            let lns = other.as_linear();
+            let mut i = 0;
+            while !bln && i < lns.len() {
+                bln = self.intersects_linestring(&lns[i]);
+                i += 1;
+            }
+            bln
         }
     }
 
@@ -271,9 +280,14 @@ impl Geometry for LineString {
         if other.geom_type().is_polygon() {
             self.intersection_polygon_rings(other.linear_rings())
         } else {
-            let other_lns = other.as_linear();
-            let shell = &other_lns[0];
-            self.linear_intersection(shell)
+            //assume as_linear of other is > 1
+            let mut ptset = BTreeSet::new();
+            let lns = other.as_linear();
+            for ln in lns.iter() {
+                self.linear_intersection(ln).iter()
+                    .for_each(|p| { ptset.insert(*p); });
+            }
+            ptset.into_iter().collect()
         }
     }
 }

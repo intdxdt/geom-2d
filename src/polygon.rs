@@ -1,5 +1,6 @@
 use crate::{LinearRing, Point, Geometry, LineString, GeomType, parse_wkt};
 use bbox_2d::MBR;
+use std::collections::BTreeSet;
 
 #[derive(Clone, Debug)]
 pub struct Polygon(pub Vec<LinearRing>);
@@ -20,7 +21,7 @@ impl Polygon {
     }
 
     pub fn holes(&self) -> &[LinearRing] {
-            &self.0[1..]
+        &self.0[1..]
     }
 
     pub fn wkt(&self) -> String {
@@ -57,14 +58,49 @@ impl Geometry for Polygon {
     }
 
     fn intersects<T>(&self, other: &T) -> bool where T: Geometry {
-        unimplemented!()
+        let mut bln = false;
+        if other.geom_type().is_polygon() {
+            if self.bbox().intersects(&other.bbox()) {
+                 bln = if self.bbox().area() < other.bbox().area() {
+                    let ln = self.shell().line_string();
+                    ln.intersects_polygon(other.linear_rings())
+                } else {
+                    let ln = other.linear_rings()[0].line_string();
+                    ln.intersects_polygon(self.linear_rings())
+                }
+            }
+        }
+        bln
     }
 
     fn intersection<T: Geometry>(&self, other: &T) -> Vec<Point> {
-        unimplemented!()
+        let mut ptset = BTreeSet::new();
+        if other.geom_type().is_polygon() {
+
+            //other intersect self
+            let lns = other.linear_rings();
+            for ln in lns.iter() {
+                ln.0.intersection(self).iter()
+                    .for_each(|v| { ptset.insert(*v); });
+            }
+
+            //self intersects other
+            let lns = self.linear_rings();
+            for ln in lns.iter() {
+                ln.0.intersection(other).iter()
+                    .for_each(|v| { ptset.insert(*v); });
+            }
+        } else {
+            let lns = other.as_linear();
+            for ln in lns.iter() {
+                ln.intersection(self).iter()
+                    .for_each(|v| { ptset.insert(*v); });
+            }
+        }
+        ptset.into_iter().collect()
     }
 
-    fn linear_rings(&self) -> &Vec<LinearRing>{
+    fn linear_rings(&self) -> &Vec<LinearRing> {
         &self.0
     }
 }

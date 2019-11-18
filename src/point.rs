@@ -385,7 +385,7 @@ impl Geometry for Point {
     }
 
     fn intersection<T: Geometry>(&self, other: &T) -> Vec<Point> {
-        unimplemented!()
+       self.as_linear()[0].intersection(other)
     }
 }
 
