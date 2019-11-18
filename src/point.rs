@@ -383,6 +383,10 @@ impl Geometry for Point {
     fn intersects<T>(&self, other: &T) -> bool where T: Geometry {
         self.as_linear()[0].intersects(other)
     }
+
+    fn intersection<T: Geometry>(&self, other: &T) -> Vec<Point> {
+        unimplemented!()
+    }
 }
 
 impl rstar::Point for Point {

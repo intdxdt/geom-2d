@@ -19,7 +19,7 @@ impl LinearRing {
         LinearRing(LineString::new(&coordinates))
     }
     pub fn bbox(&self) -> &MBR {
-        &self.0.bbox.mbr
+        &self.0.bounds.mbr
     }
 
     pub fn line_string(&self) -> &LineString {
@@ -38,7 +38,7 @@ impl LinearRing {
 
     //Contains line
     pub fn contains_line(&self, ln: &LineString) -> bool {
-        if self.bbox().disjoint(&ln.bbox.mbr) { //disjoint
+        if self.bbox().disjoint(&ln.bounds.mbr) { //disjoint
             return false;
         }
         let mut bln = true;

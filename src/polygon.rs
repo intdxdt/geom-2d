@@ -41,7 +41,7 @@ impl Polygon {
 
 impl Geometry for Polygon {
     fn bbox(&self) -> MBR {
-        self.shell().0.bbox.mbr
+        self.shell().0.bounds.mbr
     }
 
     fn as_linear(&self) -> Vec<LineString> {
@@ -58,6 +58,14 @@ impl Geometry for Polygon {
 
     fn intersects<T>(&self, other: &T) -> bool where T: Geometry {
         unimplemented!()
+    }
+
+    fn intersection<T: Geometry>(&self, other: &T) -> Vec<Point> {
+        unimplemented!()
+    }
+
+    fn linear_rings(&self) -> &Vec<LinearRing>{
+        &self.0
     }
 }
 

@@ -7,6 +7,7 @@ pub mod mono;
 pub mod util;
 pub mod chull;
 pub mod segment;
+pub mod inter;
 
 pub use coordinate::Coordinate;
 pub use crate::point::{Point, Points};
@@ -67,10 +68,12 @@ pub trait Geometry {
     fn wkt_string(&self) -> String;
     fn geom_type(&self) -> GeomType;
     fn intersects<T: Geometry>(&self, other: &T) -> bool;
-    //fn intersects(&self, other : &dyn Geometry) -> bool;
-    //	fn Intersection(Geometry) []Point
+    fn intersection<T: Geometry>(&self, other: &T) -> Vec<Point>;
+    fn linear_rings(&self) -> &Vec<LinearRing>{
+        unimplemented!();
+    }
     //	fn Distance(Geometry) float64
-    //	fn Geometry() Geometry
+    //	fn bbox() MBR
 }
 
 #[cfg(test)]
