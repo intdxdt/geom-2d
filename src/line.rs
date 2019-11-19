@@ -34,7 +34,14 @@ impl LineString {
         let index = RTree::load(chains.clone());
         LineString { coordinates, bounds: bbox, chains, index }
     }
-
+    ///New LineString from vector of points
+    pub fn re_construct(&mut self) -> &mut LineString {
+        let (bbox, chains) = util::process_chains(&self.coordinates);
+        self.bounds = bbox;
+        self.chains = chains;
+        self.index = RTree::load(self.chains.clone());
+        self
+    }
     ///Linestring from point
     pub fn from_point(pt: Point) -> LineString {
         LineString::new(&[pt, pt])
@@ -45,8 +52,9 @@ impl LineString {
         s.into()
     }
 
-    pub fn as_linear(&self) -> Vec<LineString> {
-        vec![self.clone()]
+    ///As array
+    pub fn as_array(&self) -> Vec<[f64; 2]> {
+        self.coordinates.iter().map(|v| v.as_array()).collect()
     }
 
     pub fn wkt(&self) -> String {
