@@ -267,7 +267,6 @@ impl<T> From<&[T; 2]> for Point where T: NumCast + Copy {
     }
 }
 
-
 impl From<&[f64]> for Point {
     fn from(slice: &[f64]) -> Self {
         Point { x: slice[0], y: slice[1] }
@@ -442,6 +441,20 @@ macro_rules! pt {
         Point{x : ($l) as f64, y : ($r) as f64}
     };
 }
+
+#[macro_export]
+macro_rules! pts{
+    ($($x:expr),*) => {
+        {
+            let mut vec:Vec<Point> = Vec::new();
+            $(
+                vec.push((&$x).into());
+            )*
+            vec
+        }
+    };
+}
+
 
 #[cfg(test)]
 mod tests;

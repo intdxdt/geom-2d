@@ -25,6 +25,15 @@ impl LineString {
         let index = RTree::load(chains.clone());
         LineString { coordinates, bounds: bbox, chains, index }
     }
+    ///New LineString from vector of points
+    pub fn from_vec(coordinates: Vec<Point>) -> LineString {
+        if coordinates.len() < 2 {
+            panic!("a linestring must have at least 2 coordinates");
+        }
+        let (bbox, chains) = util::process_chains(&coordinates);
+        let index = RTree::load(chains.clone());
+        LineString { coordinates, bounds: bbox, chains, index }
+    }
 
     ///Linestring from point
     pub fn from_point(pt: Point) -> LineString {
@@ -47,12 +56,31 @@ impl LineString {
             .collect::<Vec<_>>()
             .join(","))
     }
+
+    ///Length of linestring
+    pub fn length(&self) -> f64 {
+        self.len(0, self.coordinates.len() - 1)
+    }
+
+    ///length of line from index i to j
+    fn len(&self, i: usize, j: usize) -> f64 {
+        let mut dist = 0.0;
+        let (mut i, mut j) = (i, j);
+        if j < i {
+            std::mem::swap(&mut i, &mut j);
+        }
+        while i < j {
+            dist += self.coordinates[i].distance(&self.coordinates[i + 1]);
+            i += 1;
+        }
+        dist
+    }
 }
 
 //linear relate
 impl LineString {
     ///Checks if line intersects other{LineString}
-   pub  fn intersects_linestring(&self, other: &LineString) -> bool {
+    pub fn intersects_linestring(&self, other: &LineString) -> bool {
         let mut bln = false;
         let mut othersegs = Vec::new();
         let mut selfsegs = Vec::new();
@@ -116,7 +144,7 @@ impl LineString {
     }
 
 
-    pub  fn linear_intersection(&self, other: &LineString) -> Vec<Point> {
+    pub fn linear_intersection(&self, other: &LineString) -> Vec<Point> {
         let mut ptset = BTreeSet::new();
         if self.bounds.mbr.disjoint(&other.bounds.mbr) {
             return Vec::new(); //disjoint
@@ -147,7 +175,7 @@ impl LineString {
 
 
     //line intersect polygon rings
-   pub  fn intersection_polygon_rings(&self, rings: &Vec<LinearRing>) -> Vec<Point> {
+    pub fn intersection_polygon_rings(&self, rings: &Vec<LinearRing>) -> Vec<Point> {
         let mut res = Vec::new();
         let shell = &rings[0];
         let mut ptset = BTreeSet::new();
@@ -240,6 +268,17 @@ impl LineString {
     }
 }
 
+#[macro_export]
+macro_rules! ln {
+    ($($x:expr),*) => {
+        {
+            let mut vec:Vec<Point> = Vec::new();
+            $( vec.push((&$x).into()); )*
+            LineString::from_vec(vec)
+        }
+    };
+}
+
 impl Geometry for LineString {
     fn bbox(&self) -> MBR {
         self.bounds.mbr
@@ -292,7 +331,6 @@ impl Geometry for LineString {
     }
 }
 
-
 impl From<&str> for LineString {
     fn from(wkt_str: &str) -> Self {
         let o = parse_wkt(wkt_str);
@@ -312,13 +350,39 @@ impl From<&str> for LineString {
     }
 }
 
+impl From<Vec<Point>> for LineString {
+    fn from(coordinates: Vec<Point>) -> Self {
+        LineString::from_vec(coordinates)
+    }
+}
+
+impl From<&Vec<Point>> for LineString {
+    fn from(coordinates: &Vec<Point>) -> Self {
+        LineString::new(coordinates)
+    }
+}
+
+impl From<Vec<[f64; 2]>> for LineString {
+    fn from(array: Vec<[f64; 2]>) -> Self {
+        LineString::from_vec(
+            array.iter()
+                .map(|v| Point::new(v[0], v[1]))
+                .collect::<Vec<Point>>()
+        )
+    }
+}
+
+impl From<&[Point]> for LineString {
+    fn from(coordinates: &[Point]) -> Self {
+        LineString::new(coordinates)
+    }
+}
 
 impl std::fmt::Display for LineString {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> Result<(), std::fmt::Error> {
         write!(f, "{}", self.wkt())
     }
 }
-
 
 #[cfg(test)]
 mod tests;

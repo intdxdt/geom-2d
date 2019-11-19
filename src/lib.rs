@@ -69,9 +69,8 @@ pub trait Geometry {
     fn geom_type(&self) -> GeomType;
     fn intersects<T: Geometry>(&self, other: &T) -> bool;
     fn intersection<T: Geometry>(&self, other: &T) -> Vec<Point>;
-    fn linear_rings(&self) -> &Vec<LinearRing>{
-        unimplemented!();
-    }
+    fn linear_rings(&self) -> &Vec<LinearRing>{ unimplemented!(); }
+    fn area(&self) -> f64 { 0f64 }
     //	fn Distance(Geometry) float64
     //	fn bbox() MBR
 }
