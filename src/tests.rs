@@ -141,3 +141,85 @@ fn test_line_string_mono() {
     assert_eq!(ln.bbox(), *mbox.bbox());
     assert_eq!(ln.bounds.mbr, mbox.mbr);
 }
+
+#[test]
+fn test_geometry_intersection() {
+    let lnwkt = pts![[350, 710], [400, 770], [450, 770], [480, 810], [570, 820], [670, 730], [720, 760], [930, 800]];
+    let lnwkt2 = "LINESTRING ( 620 620, 720 690, 790 680, 820 630, 870 630, 910 600, 900 530, 800 450, 730 390, 680 420, 640 460, 600 480, 650 540, 690 570, 780 570, 730 630, 680 600, 610 570, 550 610 )";
+
+    let plywkt = "POLYGON (( 720 760, 860 770, 950 700, 930 640, 800 600, 740 580, 730 500, 760 440, 720 360, 620 390, 510 480, 460 570, 440 630, 450 740, 480 810, 570 820, 570 770, 580 740, 670 730, 720 760 ), ( 630 670, 580 650, 590 600, 650 580, 710 600, 710 670, 630 670 ), ( 780 650, 800 640, 850 710, 830 720, 780 650 ))";
+    let plywkt2 = "POLYGON (( 860 920, 950 880, 860 800, 930 720, 880 690, 830 700, 810 730, 790 790, 820 840, 810 870, 860 920 ), ( 840 750, 860 750, 850 800, 830 800, 840 750 ))";
+
+    let ptAwkt = "POINT ( 620 620 )";
+    let ptBwkt = "POINT ( 710 600 )";
+    let ptCwkt = "POINT ( 722.1298042987639 582.0334837046336 )";
+    let ptDwkt = "POINT ( 720 360 )";
+    let ptEwkt = "POINT ( 730 600 )";
+    let ptFwkt = "POINT ( 680 630 )";
+    let ptGwkt = "POINT ( 780 660 )";
+    let ptHwkt = "POINT ( 630 570 )";
+
+    let polyAwkt = "POLYGON ((730 410, 920 500, 930 540, 930 580, 900 640, 810 650, 750 520, 730 410))";
+    let polyBwkt = "POLYGON ((630 620, 730 410, 890 410, 1040 510, 1080 620, 1020 720, 690 720, 630 620))";
+
+    let ln = LineString::from_vec(lnwkt.clone());
+    let ln2 = LineString::from_wkt(lnwkt2);
+    let ply = Polygon::from_wkt(plywkt);
+    let ply2 = Polygon::from_wkt(plywkt2);
+
+    let plyA = Polygon::from_wkt(polyAwkt);
+    let plyB = Polygon::from_wkt(polyBwkt);
+
+    let ptA = Point::from_wkt(ptAwkt);
+    let ptB = Point::from_wkt(ptBwkt);
+    let ptC = Point::from_wkt(ptCwkt);
+    let ptD = Point::from_wkt(ptDwkt);
+    let ptE = Point::from_wkt(ptEwkt);
+    let ptF = Point::from_wkt(ptFwkt);
+    let ptG = Point::from_wkt(ptGwkt);
+    let ptH = Point::from_wkt(ptHwkt);
+
+    let segAA = Segment::new(ptA, ptA);
+    let segAB = Segment::new(ptA, ptB);
+    let len = |v:Vec<Point> | v.len();
+    //"Intersection with pt, seg, ln, poly"
+    let inters = plyA.intersection(&plyB);
+    assert_eq!(inters.len(), 7);
+
+			assert_eq!(ply.intersection(&ln)  .len(),4);
+			assert_eq!(ply.intersection(&ln2) .len(),22);
+			assert_eq!(ply.intersection(&ply2).len(),13);
+
+			assert_eq!(len(ptA.intersection(&ply)),0);
+			assert_eq!(len(ply.intersection(&ptA)),0);
+
+			assert_eq!(len(ply.intersection(&ptB)),1);
+			assert_eq!(len(ptB.intersection(&ply)),1);
+
+			assert_eq!(len(segAA.intersection(&ply)),0);
+			assert_eq!(len(ply.intersection(  &segAA)),0);
+			assert_eq!(len(segAB.intersection(&ply)),1);
+
+			assert_eq!(len(ptA.intersection(  &ln)),0);
+			assert_eq!(len(ln.intersection(   &ptA)),0);
+			assert_eq!(len(segAB.intersection(&ptA)),1);
+			assert_eq!(len(ptA.intersection(  &segAB)),1);
+			assert_eq!(len(ply.intersection(  &segAB)),1);
+
+			assert_eq!(len(ply.intersection(&ptC)),1);
+			assert_eq!(len(ptC.intersection(&ply)),1);
+
+			assert_eq!(len(ply.intersection(&ptD)),1);
+			assert_eq!(len(ptD.intersection(&ply)),1);
+
+			assert_eq!(len(ptA.intersection(&ptB)),0);
+			assert_eq!(len(ptA.intersection(&ptA)),1);
+			assert_eq!(len(ptA.intersection(&ln2)),1);
+
+			assert_eq!(len(ln2.intersection(&ptA)),1);
+			assert_eq!(len(ln2.intersection(&ptB)),0);
+			assert_eq!(len(ln2.intersection(&ptE)),0);
+			assert_eq!(len(ln2.intersection(&ptF)),0);
+			assert_eq!(len(ln2.intersection(&ptG)),0);
+			assert_eq!(len(ln2.intersection(&ptH)),0);
+}

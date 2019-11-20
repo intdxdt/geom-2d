@@ -12,6 +12,7 @@ pub mod inter;
 pub use coordinate::Coordinate;
 pub use crate::point::{Point, Points};
 pub use crate::line::LineString;
+pub use crate::segment::Segment;
 pub use crate::ring::LinearRing;
 pub use crate::polygon::Polygon;
 pub use crate::wkt::parse_wkt;
@@ -76,15 +77,4 @@ pub trait Geometry {
 }
 
 #[cfg(test)]
-mod tests {
-    use super::*;
-    use point::Point;
-    use math_util::SQRT_2;
-
-    #[test]
-    fn it_works() {
-        let z = pt![0, 0];
-        let o = Point::new(1., 1.);
-        assert_eq!(o.distance(&z), SQRT_2);
-    }
-}
+mod tests;

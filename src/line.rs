@@ -71,7 +71,7 @@ impl LineString {
     }
 
     ///length of line from index i to j
-    fn len(&self, i: usize, j: usize) -> f64 {
+    pub fn len(&self, i: usize, j: usize) -> f64 {
         let mut dist = 0.0;
         let (mut i, mut j) = (i, j);
         if j < i {
@@ -392,5 +392,3 @@ impl std::fmt::Display for LineString {
     }
 }
 
-#[cfg(test)]
-mod tests;

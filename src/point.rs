@@ -83,14 +83,14 @@ impl Point {
     }
 
     ///Dot Product of two points as vectors
-    pub fn dot_product(&self, o: Point) -> f64 {
+    pub fn dot_product(&self, o: &Point) -> f64 {
         (self.x * o.x) + (self.y * o.y)
     }
 
     ///2D cross product of AB and AC vectors,
     ///i.e. z-component of their 3D cross product.
     ///negative cw and positive if ccw
-    pub fn cross_product(&self, b: Point) -> f64 {
+    pub fn cross_product(&self, b: &Point) -> f64 {
         return (self.x * b.y) - (self.y * b.x);
     }
 
@@ -149,14 +149,14 @@ impl Point {
 
     ///Projects self on to v
     pub fn project(&self, v: Point) -> f64 {
-        return self.dot_product(v.unit_vector());
+        return self.dot_product(&v.unit_vector());
     }
 
     ///2D cross product of AB and AC vectors given A, B, and C as points,
     ///i.e. z-component of their 3D cross product.
     ///Returns a positive value, if ABC makes a counter-clockwise turn,
     ///negative for clockwise turn, and zero if the points are collinear.
-    pub fn orientation2d(&self, a: Point, b: Point) -> f64 {
+    pub fn orientation2d(&self, a: &Point, b: &Point) -> f64 {
         return orientation_2d(&a.as_array(), &b.as_array(), &self.as_array());
     }
 
@@ -214,14 +214,14 @@ impl Point {
     }
 
     ///Compute angle at point
-    pub fn angle_at_point(&self, a: Point, b: Point) -> f64 {
+    pub fn angle_at_point(&self, a: &Point, b: &Point) -> f64 {
         let sa = a.sub(self);
         let sb = b.sub(self);
-        sa.cross_product(sb).atan2(sa.dot_product(sb)).abs()
+        sa.cross_product(&sb).atan2(sa.dot_product(&sb)).abs()
     }
 
     ///position of self relative to line a, b
-    pub fn side_of(&self, a: Point, b: Point) -> Side {
+    pub fn side_of(&self, a: &Point, b: &Point) -> Side {
         let mut s = Side::new();
         let ccw = self.orientation2d(a, b);
         if ccw == 0.0 {

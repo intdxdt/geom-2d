@@ -1,9 +1,81 @@
-use crate::{Point, util, pt};
+use crate::{Point, util, pt, LineString, Geometry, GeomType};
 use math_util::Feq;
 use bbox_2d::MBR;
 use crate::inter::{InterPoint, SELF_A, SELF_B, OTHER_A, OTHER_B, SELF_MASK, OTHER_MASK};
 use crate::util::{snap_to_zero, snap_to_zero_or_one};
+use side_rel::Side;
 
+pub struct Segment {
+    pub coordinates: [Point; 2]
+}
+
+impl Segment {
+    pub fn new(a: Point, b: Point) -> Segment {
+        Segment { coordinates: [a, b] }
+    }
+
+    #[inline]
+    pub fn a(&self) -> &Point {
+        &self.coordinates[0]
+    }
+
+    #[inline]
+    pub fn b(&self) -> &Point {
+        &self.coordinates[1]
+    }
+    //Segment as line string
+    pub fn as_linestring(&self) -> LineString {
+        (&self.coordinates[..]).into()
+    }
+    //Side of pt to segement
+    pub fn side_of(&self, pt: Point) -> Side {
+        pt.side_of(self.a(), self.b())
+    }
+
+    //Line segments intersects
+    fn seg_seg_intersects(&self, other: &Segment) -> bool {
+        return intersects(self.a(), self.b(), other.a(), other.b());
+    }
+
+    //Line segments intersection
+    fn seg_seg_intersection(&self, other: &Segment) -> Vec<InterPoint> {
+        return intersection(self.a(), self.b(), other.a(), other.b());
+    }
+
+    pub fn wkt(&self) -> String {
+        format!("LINESTRING({})", self.coordinates
+            .iter()
+            .map(|pt| pt.fmt_xy())
+            .collect::<Vec<_>>()
+            .join(","))
+    }
+}
+
+impl Geometry for Segment {
+    fn bbox(&self) -> MBR {
+        MBR::new_from_bounds(self.a().as_array(), self.b().as_array())
+    }
+
+    fn as_linear(&self) -> Vec<LineString> {
+        vec![self.as_linestring()]
+    }
+
+    fn wkt_string(&self) -> String {
+        self.wkt()
+    }
+
+    fn geom_type(&self) -> GeomType {
+        GeomType::Segment
+    }
+
+    fn intersects<T: Geometry>(&self, other: &T) -> bool {
+        self.as_linestring().intersects(other)
+    }
+
+    fn intersection<T: Geometry>(&self, other: &T) -> Vec<Point> {
+        self.as_linestring().intersection(other)
+    }
+}
 
 //do two lines intersect line segments a && b with
 //vertices sa, sb, oa, ob

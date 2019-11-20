@@ -31,7 +31,7 @@ fn build_hull(hb: &mut Vec<Point>, points: &mut Vec<Point>, start: i32, step: i3
     while i != stop {
         let pt = points[i as usize];
         let mut n = hb.len();
-        while n >= 2 && pt.side_of(hb[n - 2], hb[n - 1]).is_on_or_right() {
+        while n >= 2 && pt.side_of(&hb[n - 2], &hb[n - 1]).is_on_or_right() {
             hb.pop();
             n = hb.len();
         }

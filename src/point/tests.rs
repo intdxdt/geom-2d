@@ -113,7 +113,7 @@ fn test_component_negation() {
 fn test_orient_dot_cross_product() {
     let a = pt!(1.2, -4.2);
     let b = pt!(1.2, -4.2);
-    assert_eq!(19.08, round(a.dot_product(b), 8));
+    assert_eq!(19.08, round(a.dot_product(&b), 8));
 
     let a = pt!(237, 289);
     let b = pt!(404.25, 357.25);
@@ -121,17 +121,17 @@ fn test_orient_dot_cross_product() {
     let d = pt!(297.13043478260863, 339.30434782608694);
     let e = pt!(445.8260869565217, 350.17391304347825);
 
-    assert_eq!(c.orientation2d(a, b), 0.);
-    assert!(d.orientation2d(a, c) < 0.);
-    assert!(e.orientation2d(a, c) > 0.);
+    assert_eq!(c.orientation2d(&a, &b), 0.);
+    assert!(d.orientation2d(&a, &c) < 0.);
+    assert!(e.orientation2d(&a, &c) > 0.);
 
     let ab = b.sub(&a);
     let ac = c.sub(&a);
     let ad = d.sub(&a);
     let ae = e.sub(&a);
-    assert_eq!(ab.cross_product(ac), 0.);
-    assert!(ac.cross_product(ad) > 0.);
-    assert!(ac.cross_product(ae) < 0.);
+    assert_eq!(ab.cross_product(&ac), 0.);
+    assert!(ac.cross_product(&ad) > 0.);
+    assert!(ac.cross_product(&ae) < 0.);
 
     let k = pt!(-0.887, -1.6128);
     let u = pt!(4.55309, 1.42996);
@@ -141,9 +141,9 @@ fn test_orient_dot_cross_product() {
     let on = |x: f64| x.feq(0.);
     let mut sides = vec![0.0; testpoints.len()];
     for (i, pt) in testpoints.into_iter().enumerate() {
-        sides[i] = pt.orientation2d(k, u)
+        sides[i] = pt.orientation2d(&k, &u)
     }
-    assert!(pt!(2,2).orientation2d(k, u) < 0.);
+    assert!(pt!(2,2).orientation2d(&k, &u) < 0.);
     let side_out: Vec<&dyn Fn(f64) -> bool> = vec![&left, &left, &right, &right, &left, &right, &on, &on];
     for i in 0..side_out.len() {
         assert!(side_out[i](sides[i]))
@@ -303,17 +303,17 @@ fn test_side_of() {
     let c = pt!(460, 380);
     let d = pt!(297.13043478260863, 339.30434782608694);
     let e = pt!(445.8260869565217, 350.17391304347825);
-    assert!(b.side_of(a, c).is_on());
-    assert!(b.side_of(a, c).is_on_or_left());
-    assert!(b.side_of(a, c).is_on_or_right());
+    assert!(b.side_of(&a, &c).is_on());
+    assert!(b.side_of(&a, &c).is_on_or_left());
+    assert!(b.side_of(&a, &c).is_on_or_right());
 
-    assert!(d.side_of(a, c).is_left());
-    assert!(d.side_of(a, c).is_on_or_left());
-    assert!(!d.side_of(a, c).is_on_or_right());
+    assert!(d.side_of (&a, &c).is_left());
+    assert!(d.side_of (&a, &c).is_on_or_left());
+    assert!(!d.side_of(&a, &c).is_on_or_right());
 
-    assert!(e.side_of(a, c).is_right());
-    assert!(e.side_of(a, c).is_on_or_right());
-    assert!(!e.side_of(a, c).is_on_or_left());
+    assert!(e.side_of (&a, &c).is_right());
+    assert!(e.side_of (&a, &c).is_on_or_right());
+    assert!(!e.side_of(&a, &c).is_on_or_left());
 }
 
 #[test]
@@ -321,8 +321,8 @@ fn test_angle_at_point() {
     let a = pt!(-1.28, 0.74);
     let b = pt!(1.9, 4.2);
     let c = pt!(3.16, -0.84);
-    assert_eq!(round(a.angle_at_point(b, c), 8), round(1.1694239325184717, 8));
-    assert_eq!(round(b.angle_at_point(a, c), 8), round(0.9882331199311394, 8));
+    assert_eq!(round(a.angle_at_point(&b, &c), 8), round(1.1694239325184717, 8));
+    assert_eq!(round(b.angle_at_point(&a, &c), 8), round(0.9882331199311394, 8));
 }
 
 
