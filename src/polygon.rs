@@ -11,6 +11,11 @@ impl Polygon {
         Polygon(lnr_rings(coordinates))
     }
 
+    ///Construct from coordinates
+    pub fn from_vec(coordinates: &Vec<Point>) -> Polygon {
+        Polygon::new(&vec![coordinates.clone()])
+    }
+
     ///Construct from wkt
     pub fn from_wkt(s: &str) -> Polygon {
         s.into()
