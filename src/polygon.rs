@@ -29,6 +29,15 @@ impl Polygon {
         &self.0[1..]
     }
 
+    pub fn bounds(&self) -> MBR {
+        self.shell().0.bounds.mbr
+    }
+
+    pub fn coordinates(&self) -> Vec<Vec<Point>> {
+        self.0.iter().map(|v| v.0.coordinates.clone()).collect()
+    }
+
+
     pub fn wkt(&self) -> String {
         format!("POLYGON(({}))", self.0
             .iter()
@@ -66,7 +75,7 @@ impl Geometry for Polygon {
         let mut bln = false;
         if other.geom_type().is_polygon() {
             if self.bbox().intersects(&other.bbox()) {
-                 bln = if self.bbox().area() < other.bbox().area() {
+                bln = if self.bbox().area() < other.bbox().area() {
                     let ln = self.shell().line_string();
                     ln.intersects_polygon(other.linear_rings())
                 } else {
@@ -107,6 +116,15 @@ impl Geometry for Polygon {
 
     fn linear_rings(&self) -> &Vec<LinearRing> {
         &self.0
+    }
+
+    fn area(&self) -> f64{
+        let rings = self.linear_rings();
+        let mut a = rings[0].area();
+        for rng in rings[1..].iter(){
+            a -= rng.area();
+        }
+        a
     }
 }
 

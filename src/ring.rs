@@ -30,13 +30,13 @@ impl LinearRing {
         &self.0.coordinates
     }
 
-    //Contains point
+    ///Contains point
     pub fn contains_point(&self, pnt: &Point) -> bool {
         return self.bbox().intersects_xy(pnt.x, pnt.y) &&
             self.point_completely_in_ring(pnt);
     }
 
-    //Contains line
+    ///Contains line
     pub fn contains_line(&self, ln: &LineString) -> bool {
         if self.bbox().disjoint(&ln.bounds.mbr) { //disjoint
             return false;
@@ -50,23 +50,22 @@ impl LinearRing {
         bln
     }
 
-    //Contains polygon
+    ///Contains polygon
     pub fn contains_polygon(&self, polygon: &Polygon) -> bool {
         return self.contains_line(polygon.shell().line_string());
     }
 
 
-    //point completely in ring
+    ///point completely in ring
     pub fn point_completely_in_ring(&self, pnt: &Point) -> bool {
         return self.bbox().intersects_xy(pnt.x, pnt.y) && self.completely_in_ring(pnt);
     }
 
-    //Test whether a point lies inside a ring.
-    //The ring may be oriented in either direction.
-    //If the point lies on the ring boundary the result of this method is unspecified.
-    //This algorithm does not attempt to first check the point against the envelope of the ring.
+    ///Test whether a point lies inside a ring.
+    ///The ring may be oriented in either direction.
+    ///If the point lies on the ring boundary the result of this method is unspecified.
+    ///This algorithm does not attempt to first check the point against the envelope of the ring.
     pub fn completely_in_ring(&self, p: &Point) -> bool {
-
         // for each segment l = (i-1, i), see if it crosses ray from test point in positive x direction.
         let mut crossings = 0; // number of segment/ray crossings
         let coords = self.coordinates();
@@ -89,11 +88,27 @@ impl LinearRing {
         //p is inside if number of crossings is odd.
         (crossings % 2) == 1
     }
+
+    /// Area of linear ring
+    pub  fn area(&self) -> f64 {
+        let coords = self.coordinates();
+        let n = coords.len();
+        let mut a;
+        let mut b;
+        let mut area = 0.0;
+        b = coords[n - 1];
+        for i in 0..n {
+            a = b;
+            b = coords[i];
+            area += a.y * b.x - a.x * b.y
+        }
+        return (area * 0.5).abs();
+    }
 }
 
 
 ///Is coordinates Po == Pn
-pub  fn is_ring(coordinates: &Vec<Point>) -> bool {
+pub fn is_ring(coordinates: &Vec<Point>) -> bool {
     if coordinates.len() < 2 {
         false
     } else {
