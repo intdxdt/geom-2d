@@ -37,6 +37,18 @@ fn test_construct_3() {
 }
 
 #[test]
+#[should_panic]
+fn test_construct_4() {
+  let ply: Polygon = "LINESTRING(5.6 7.9,5.6 8.9,6.6 8.9,6.6 7.9,5.6 7.9)".into();
+}
+
+#[test]
+#[should_panic]
+fn test_construct_5() {
+  let ply: Polygon = "Polygon(5.6 7.9,5.6 8.9,6.6 8.9,6.6 7.9,5.6 7.9)".into();
+}
+
+#[test]
 fn test_to_array_and_re_construct() {
     let pts = pts![[5.6, 7.9], [5.6, 8.9], [6.6, 8.9], [6.6, 7.9], [5.6, 7.9]];
     let pt_array = vec![[5.6, 7.9, ], [5.6, 8.9, ], [6.6, 8.9, ], [6.6, 7.9, ], [5.6, 7.9, ]];
@@ -277,8 +289,11 @@ fn test_polygon() {
 
 #[test]
 fn test_polygon_holes_chull() {
-    let ply = "POLYGON (( 5.6 7.9, 5.6 8.9, 6.6 8.9, 6.6 7.9, 5.6 7.9 ), (5.81 8.43, 5.84 8.68, 6.30 8.77, 6.42 8.52, 6.36 8.19, 5.96 8.14, 5.81 8.43 ))";
+    let ply = "POLYGON((5.6 7.9,5.6 8.9,6.6 8.9,6.6 7.9,5.6 7.9),(5.81 8.43,5.84 8.68,6.3 8.77,6.42 8.52,6.36 8.19,5.96 8.14,5.81 8.43))";
     let gply = Polygon::from_wkt(ply);
+    assert_eq!(format!("{}", gply), ply);
+    assert_eq!(format!("{}", gply.wkt_string()), ply);
+    assert_eq!(format!("{}", gply.wkt()), ply);
     assert_eq!(round(gply.area(), 5), 0.7025);
     let arr = pts![
     [5.89, 8.64], [5.87, 8.74], [5.91, 8.86],
