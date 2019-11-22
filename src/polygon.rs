@@ -119,9 +119,8 @@ impl Geometry for Polygon {
     }
 
     fn area(&self) -> f64{
-        let rings = self.linear_rings();
-        let mut a = rings[0].area();
-        for rng in rings[1..].iter(){
+        let mut a = self.shell().area();
+        for rng in self.holes().iter(){
             a -= rng.area();
         }
         a

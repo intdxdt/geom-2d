@@ -21,10 +21,6 @@ impl MonoMBR {
         MonoMBR { mbr,i: NULL_INDEX, j: NULL_INDEX }
     }
 
-    pub fn new_default() -> MonoMBR {
-        MonoMBR { mbr: MBR::new_default(), i: 0, j: 0 }
-    }
-
     pub fn bbox(&self) -> &MBR {
         &self.mbr
     }

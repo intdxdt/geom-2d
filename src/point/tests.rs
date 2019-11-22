@@ -5,6 +5,10 @@ use rstar::Point as RStarPoint;
 #[test]
 fn test_point() {
     let a = Point::from_wkt("POINT(3 4)");
+
+    assert!(a.geom_type().is_point());
+    assert_eq!(format!("{}",a.geom_type()), "Point".to_string());
+    assert!(!a.geom_type().is_line_string());
     assert_eq!(a.val(0), 3.);
     assert_eq!(a.val(1), 4.);
     let mut b = pt![4, 5];
