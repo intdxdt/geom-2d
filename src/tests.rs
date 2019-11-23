@@ -386,55 +386,58 @@ fn test_segments() {
 
 			assert!(seg_ab.geom_type().is_segment());
 			assert!(seg_ab.is_simple());
-//			g.Assert(seg_ab.Type().IsLineString()).IsFalse()
-//			var box = mbr.CreateMBR(0, 0, -3, 4)
-//			var seg_ab_box = seg_ab.BBox()
-//			g.Assert(seg_ab_box.Equals(&box)).IsTrue()
-//			g.Assert(seg_ab.AsLinear()).Eql([]*LineString{ln_ab})
-//			g.Assert(seg_ab.WKT()).Eql(ln_ab.WKT())
-//			g.Assert(seg_ab.Intersects(k)).IsFalse()
-//			g.Assert(seg_ab.Intersects(seg_kn)).IsFalse()
-//			g.Assert(seg_ab.Geometry().Intersects(seg_kn)).IsFalse()
-//			g.Assert(seg_ab.Intersects(seg_kn.Geometry())).IsFalse()
-//			g.Assert(seg_ab.Intersects(seg_ak)).IsTrue()
-//			g.Assert(seg_ab.Geometry().Intersects(seg_ak)).IsTrue()
-//			g.Assert(seg_ab.Intersects(seg_ak.Geometry())).IsTrue()
-//			g.Assert(seg_ab.Intersects(ply)).IsTrue()
-//			g.Assert(ply.Intersects(seg_ab)).IsTrue()
+			assert!(!seg_ab.geom_type().is_line_string());
+			let mbox = MBR::new(0., 0., -3., 4.);
+			let seg_ab_box = seg_ab.bbox();
+            let ab_linear =seg_ab.as_linear();
+			assert!(seg_ab_box.equals(&mbox));
+
+			assert_eq!(ab_linear.len(), 1);
+			assert_eq!([ab_linear[0].wkt()], [ln_ab.wkt()]);
+			assert_eq!(seg_ab.wkt(), ln_ab.wkt());
+			assert!(!seg_ab.intersects(&k));
+			assert!(!seg_ab.intersects(&seg_kn));
+			assert!(!seg_ab.intersects(&seg_kn));
+//			assert!(seg_ab.Intersects(seg_kn.Geometry())).IsFalse()
+//			assert!(seg_ab.Intersects(seg_ak)).IsTrue()
+//			assert!(seg_ab.Geometry().Intersects(seg_ak)).IsTrue()
+//			assert!(seg_ab.Intersects(seg_ak.Geometry())).IsTrue()
+//			assert!(seg_ab.Intersects(ply)).IsTrue()
+//			assert!(ply.Intersects(seg_ab)).IsTrue()
 //
-//			g.Assert(seg_kn.Intersects(ply)).IsFalse()
-//			g.Assert(ply.Intersects(seg_kn)).IsFalse()
+//			assert!(seg_kn.Intersects(ply)).IsFalse()
+//			assert!(ply.Intersects(seg_kn)).IsFalse()
 //
-//			g.Assert(seg_ab.Intersection(seg_ak)).Eql([]Point{a})
-//			g.Assert(seg_ab.Distance(seg_ak)).Equal(0.0)
+//			assert!(seg_ab.Intersection(seg_ak)).Eql([]Point{a})
+//			assert!(seg_ab.Distance(seg_ak)).Equal(0.0)
 //			fmt.Println(seg_ab.Distance(seg_kn))
-//			g.Assert(feq(seg_ab.Distance(seg_kn), 2.8)).IsTrue()
+//			assert!(feq(seg_ab.Distance(seg_kn), 2.8)).IsTrue()
 //
 //			pts := seg_ab.SegSegIntersection(seg_de)
-//			g.Assert(pts[0].Point).Equal(Point{-1.5, 2})
+//			assert!(pts[0].Point).Equal(Point{-1.5, 2})
 //
 //			pts = seg_ab.SegSegIntersection(seg_cd)
 //			ok := len(pts) > 0
-//			g.Assert(ok).IsTrue()
-//			g.Assert(pts[0].Point).Equal(Point{-1.5, 2})
-//			g.Assert(pts[1].Point).Equal(Point{0.0, 0.0})
+//			assert!(ok).IsTrue()
+//			assert!(pts[0].Point).Equal(Point{-1.5, 2})
+//			assert!(pts[1].Point).Equal(Point{0.0, 0.0})
 //
 //			pts = seg_gkh.SegSegIntersection(seg_cd)
-//			g.Assert(len(pts)).Equal(1) //at h
+//			assert!(len(pts)).Equal(1) //at h
 //
 //			pts = seg_hi.SegSegIntersection(seg_cd)
-//			g.Assert(len(pts)).Equal(2) //at h, i
+//			assert!(len(pts)).Equal(2) //at h, i
 //
 //			pts = seg_hi.SegSegIntersection(seg_ab)
 //			ok = len(pts) > 0
-//			g.Assert(seg_hi.SegSegIntersects(seg_ab)).Equal(ok)
-//			g.Assert(ok).IsFalse()
-//			g.Assert(len(pts)).Equal(0) //empty
+//			assert!(seg_hi.SegSegIntersects(seg_ab)).Equal(ok)
+//			assert!(ok).IsFalse()
+//			assert!(len(pts)).Equal(0) //empty
 //
 //			pts = seg_ak.SegSegIntersection(seg_kn)
 //			ok = len(pts) > 0
-//			g.Assert(seg_ak.SegSegIntersects(seg_kn)).Equal(ok)
-//			g.Assert(ok).IsTrue()
-//			g.Assert(len(pts)).Equal(1)                  //at k
-//			g.Assert(pts[0].Point.Equals2D(&k)).IsTrue() //k
+//			assert!(seg_ak.SegSegIntersects(seg_kn)).Equal(ok)
+//			assert!(ok).IsTrue()
+//			assert!(len(pts)).Equal(1)                  //at k
+//			assert!(pts[0].Point.Equals2D(&k)).IsTrue() //k
 }
