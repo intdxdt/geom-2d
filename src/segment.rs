@@ -33,13 +33,18 @@ impl Segment {
     }
 
     //Line segments intersects
-    fn seg_seg_intersects(&self, other: &Segment) -> bool {
+    pub fn seg_seg_intersects(&self, other: &Segment) -> bool {
         return intersects(self.a(), self.b(), other.a(), other.b());
     }
 
     //Line segments intersection
-    fn seg_seg_intersection(&self, other: &Segment) -> Vec<InterPoint> {
+    pub fn seg_seg_intersection(&self, other: &Segment) -> Vec<InterPoint> {
         return intersection(self.a(), self.b(), other.a(), other.b());
+    }
+
+    //Is segment
+    pub fn is_simple(&self) -> bool {
+        true
     }
 
     pub fn wkt(&self) -> String {

@@ -39,13 +39,13 @@ fn test_construct_3() {
 #[test]
 #[should_panic]
 fn test_construct_4() {
-  let ply: Polygon = "LINESTRING(5.6 7.9,5.6 8.9,6.6 8.9,6.6 7.9,5.6 7.9)".into();
+    let ply: Polygon = "LINESTRING(5.6 7.9,5.6 8.9,6.6 8.9,6.6 7.9,5.6 7.9)".into();
 }
 
 #[test]
 #[should_panic]
 fn test_construct_5() {
-  let ply: Polygon = "Polygon(5.6 7.9,5.6 8.9,6.6 8.9,6.6 7.9,5.6 7.9)".into();
+    let ply: Polygon = "Polygon(5.6 7.9,5.6 8.9,6.6 8.9,6.6 7.9,5.6 7.9)".into();
 }
 
 #[test]
@@ -295,12 +295,10 @@ fn test_polygon_holes_chull() {
     assert_eq!(format!("{}", gply.wkt_string()), ply);
     assert_eq!(format!("{}", gply.wkt()), ply);
     assert_eq!(round(gply.area(), 5), 0.7025);
-    let arr = pts![
-    [5.89, 8.64], [5.87, 8.74], [5.91, 8.86],
-				[6.1310016380016386, 8.896833606333606], [6.33, 8.93],
-				[6.36, 8.77], [6.58, 8.78], [6.65, 8.61], [6.57, 8.36],
-				[6.32, 8.5], [6.21, 8.34], [5.94, 8.29], [5.78, 8.5]
-				];
+    let arr = pts![ [5.89, 8.64], [5.87, 8.74], [5.91, 8.86], [6.1310016380016386, 8.896833606333606], [6.33, 8.93],
+	    [6.36, 8.77], [6.58, 8.78], [6.65, 8.61], [6.57, 8.36],
+	    [6.32, 8.5], [6.21, 8.34], [5.94, 8.29], [5.78, 8.5]
+	];
 
     let harr = convex_hull(&arr);
     let hply = Polygon::from_vec(&harr);
@@ -309,11 +307,11 @@ fn test_polygon_holes_chull() {
 
 
     let arr2 = pts![
-				[5.89, 8.64], [5.78, 8.5], [5.94, 8.29], [6.21, 8.34],
-				[6.32, 8.5], [6.57, 8.36], [6.65, 8.61], [6.58, 8.78],
-				[6.36, 8.77], [6.33, 8.93], [6.1310016380016386, 8.896833606333606],
-				[5.91, 8.86], [5.87, 8.74]
-				];
+	    [5.89, 8.64], [5.78, 8.5], [5.94, 8.29], [6.21, 8.34],
+	    [6.32, 8.5], [6.57, 8.36], [6.65, 8.61], [6.58, 8.78],
+	    [6.36, 8.77], [6.33, 8.93], [6.1310016380016386, 8.896833606333606],
+	    [5.91, 8.86], [5.87, 8.74]
+	];
 
     let harr = convex_hull(&arr2);
     let hply = Polygon::from_vec(&harr);
@@ -354,4 +352,89 @@ fn test_polygon_holes_chull() {
     assert_eq!(&arr5, &hull);
     let phull = Polygon::from_vec(&hull);
     assert_eq!(round(phull.area(), 2), 0.0)
+}
+
+
+
+#[test]
+fn test_segments() {
+
+    		let	wkt = "POLYGON (( -0.3604422185430426 -10, -0.3604422185430426 0.5291138245033155, 10 0.5291138245033155, 10 -10, -0.3604422185430426 -10 ))";
+			let ply = Polygon::from_wkt(wkt);
+			let a:Point = (0, 0).into();
+			let b:Point = (-3, 4).into();
+			let c:Point = (1.5, -2.).into();
+			let d:Point = (-1.5, 2.).into();
+			let e:Point = (0.5, 3.).into();
+
+			//f := &Point{-2, -2}
+			let gk:Point = [-1.5, -2.5].into();
+			let h :Point = [0.484154648492778, -0.645539531323704].into();
+			let i :Point = [0.925118053504632, -1.233490738006176].into();
+			let k :Point = [2, 2].into();
+			let n :Point = [1, 5].into();
+			n.bbox();
+
+			let seg_ab  = Segment::new(a, b);
+			let ln_ab:LineString   =vec![a, b].into();
+			let seg_de  = Segment::new(d, e);
+			let seg_cd  = Segment::new(c, d);
+			let seg_gkh = Segment::new(gk, h);
+			let seg_hi  = Segment::new(h, i);
+			let seg_ak  = Segment::new(a, k);
+			let seg_kn  = Segment::new(k, n);
+
+			assert!(seg_ab.geom_type().is_segment());
+			assert!(seg_ab.is_simple());
+//			g.Assert(seg_ab.Type().IsLineString()).IsFalse()
+//			var box = mbr.CreateMBR(0, 0, -3, 4)
+//			var seg_ab_box = seg_ab.BBox()
+//			g.Assert(seg_ab_box.Equals(&box)).IsTrue()
+//			g.Assert(seg_ab.AsLinear()).Eql([]*LineString{ln_ab})
+//			g.Assert(seg_ab.WKT()).Eql(ln_ab.WKT())
+//			g.Assert(seg_ab.Intersects(k)).IsFalse()
+//			g.Assert(seg_ab.Intersects(seg_kn)).IsFalse()
+//			g.Assert(seg_ab.Geometry().Intersects(seg_kn)).IsFalse()
+//			g.Assert(seg_ab.Intersects(seg_kn.Geometry())).IsFalse()
+//			g.Assert(seg_ab.Intersects(seg_ak)).IsTrue()
+//			g.Assert(seg_ab.Geometry().Intersects(seg_ak)).IsTrue()
+//			g.Assert(seg_ab.Intersects(seg_ak.Geometry())).IsTrue()
+//			g.Assert(seg_ab.Intersects(ply)).IsTrue()
+//			g.Assert(ply.Intersects(seg_ab)).IsTrue()
+//
+//			g.Assert(seg_kn.Intersects(ply)).IsFalse()
+//			g.Assert(ply.Intersects(seg_kn)).IsFalse()
+//
+//			g.Assert(seg_ab.Intersection(seg_ak)).Eql([]Point{a})
+//			g.Assert(seg_ab.Distance(seg_ak)).Equal(0.0)
+//			fmt.Println(seg_ab.Distance(seg_kn))
+//			g.Assert(feq(seg_ab.Distance(seg_kn), 2.8)).IsTrue()
+//
+//			pts := seg_ab.SegSegIntersection(seg_de)
+//			g.Assert(pts[0].Point).Equal(Point{-1.5, 2})
+//
+//			pts = seg_ab.SegSegIntersection(seg_cd)
+//			ok := len(pts) > 0
+//			g.Assert(ok).IsTrue()
+//			g.Assert(pts[0].Point).Equal(Point{-1.5, 2})
+//			g.Assert(pts[1].Point).Equal(Point{0.0, 0.0})
+//
+//			pts = seg_gkh.SegSegIntersection(seg_cd)
+//			g.Assert(len(pts)).Equal(1) //at h
+//
+//			pts = seg_hi.SegSegIntersection(seg_cd)
+//			g.Assert(len(pts)).Equal(2) //at h, i
+//
+//			pts = seg_hi.SegSegIntersection(seg_ab)
+//			ok = len(pts) > 0
+//			g.Assert(seg_hi.SegSegIntersects(seg_ab)).Equal(ok)
+//			g.Assert(ok).IsFalse()
+//			g.Assert(len(pts)).Equal(0) //empty
+//
+//			pts = seg_ak.SegSegIntersection(seg_kn)
+//			ok = len(pts) > 0
+//			g.Assert(seg_ak.SegSegIntersects(seg_kn)).Equal(ok)
+//			g.Assert(ok).IsTrue()
+//			g.Assert(len(pts)).Equal(1)                  //at k
+//			g.Assert(pts[0].Point.Equals2D(&k)).IsTrue() //k
 }
