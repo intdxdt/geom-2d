@@ -383,6 +383,8 @@ fn test_segments() {
     let seg_kn = Segment::new(k, n);
 
     assert!(seg_ab.geom_type().is_segment());
+    assert!(!seg_ab.geom_type().is_line_string());
+    assert!(!seg_ab.geom_type().is_polygon());
     assert!(seg_ab.is_simple());
     assert!(!seg_ab.geom_type().is_line_string());
     let mbox = MBR::new(0., 0., -3., 4.);
