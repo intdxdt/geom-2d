@@ -83,6 +83,13 @@ impl Geometry for Polygon {
                     ln.intersects_polygon(self.linear_rings())
                 }
             }
+        } else {
+            let lns = other.as_linear();
+            let mut i = 0;
+            while !bln && i < lns.len() {
+                bln = lns[i].intersects(self);
+                i += 1;
+            }
         }
         bln
     }
@@ -118,9 +125,9 @@ impl Geometry for Polygon {
         &self.0
     }
 
-    fn area(&self) -> f64{
+    fn area(&self) -> f64 {
         let mut a = self.shell().area();
-        for rng in self.holes().iter(){
+        for rng in self.holes().iter() {
             a -= rng.area();
         }
         a

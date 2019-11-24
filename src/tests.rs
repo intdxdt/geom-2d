@@ -355,63 +355,58 @@ fn test_polygon_holes_chull() {
 }
 
 
-
 #[test]
 fn test_segments() {
+    let wkt = "POLYGON (( -0.3604422185430426 -10, -0.3604422185430426 0.5291138245033155, 10 0.5291138245033155, 10 -10, -0.3604422185430426 -10 ))";
+    let ply = Polygon::from_wkt(wkt);
+    let a: Point = (0, 0).into();
+    let b: Point = (-3, 4).into();
+    let c: Point = (1.5, -2.).into();
+    let d: Point = (-1.5, 2.).into();
+    let e: Point = (0.5, 3.).into();
 
-    		let	wkt = "POLYGON (( -0.3604422185430426 -10, -0.3604422185430426 0.5291138245033155, 10 0.5291138245033155, 10 -10, -0.3604422185430426 -10 ))";
-			let ply = Polygon::from_wkt(wkt);
-			let a:Point = (0, 0).into();
-			let b:Point = (-3, 4).into();
-			let c:Point = (1.5, -2.).into();
-			let d:Point = (-1.5, 2.).into();
-			let e:Point = (0.5, 3.).into();
+    //f := &Point{-2, -2}
+    let gk: Point = [-1.5, -2.5].into();
+    let h: Point = [0.484154648492778, -0.645539531323704].into();
+    let i: Point = [0.925118053504632, -1.233490738006176].into();
+    let k: Point = [2, 2].into();
+    let n: Point = [1, 5].into();
+    n.bbox();
 
-			//f := &Point{-2, -2}
-			let gk:Point = [-1.5, -2.5].into();
-			let h :Point = [0.484154648492778, -0.645539531323704].into();
-			let i :Point = [0.925118053504632, -1.233490738006176].into();
-			let k :Point = [2, 2].into();
-			let n :Point = [1, 5].into();
-			n.bbox();
+    let seg_ab = Segment::new(a, b);
+    let ln_ab: LineString = vec![a, b].into();
+    let seg_de = Segment::new(d, e);
+    let seg_cd = Segment::new(c, d);
+    let seg_gkh = Segment::new(gk, h);
+    let seg_hi = Segment::new(h, i);
+    let seg_ak = Segment::new(a, k);
+    let seg_kn = Segment::new(k, n);
 
-			let seg_ab  = Segment::new(a, b);
-			let ln_ab:LineString   =vec![a, b].into();
-			let seg_de  = Segment::new(d, e);
-			let seg_cd  = Segment::new(c, d);
-			let seg_gkh = Segment::new(gk, h);
-			let seg_hi  = Segment::new(h, i);
-			let seg_ak  = Segment::new(a, k);
-			let seg_kn  = Segment::new(k, n);
+    assert!(seg_ab.geom_type().is_segment());
+    assert!(seg_ab.is_simple());
+    assert!(!seg_ab.geom_type().is_line_string());
+    let mbox = MBR::new(0., 0., -3., 4.);
+    let seg_ab_box = seg_ab.bbox();
+    let ab_linear = seg_ab.as_linear();
+    assert!(seg_ab_box.equals(&mbox));
 
-			assert!(seg_ab.geom_type().is_segment());
-			assert!(seg_ab.is_simple());
-			assert!(!seg_ab.geom_type().is_line_string());
-			let mbox = MBR::new(0., 0., -3., 4.);
-			let seg_ab_box = seg_ab.bbox();
-            let ab_linear =seg_ab.as_linear();
-			assert!(seg_ab_box.equals(&mbox));
+    assert_eq!(ab_linear.len(), 1);
+    assert_eq!([ab_linear[0].wkt()], [ln_ab.wkt()]);
+    assert_eq!(seg_ab.wkt_string(), ln_ab.wkt());
+    assert!(!seg_ab.intersects(&k));
+    assert!(!seg_ab.intersects(&seg_kn));
+    assert!(!seg_ab.intersects(&seg_kn));
+    assert!(seg_ab.intersects(&seg_ak));
+    assert!(seg_ab.intersects(&ply));
+    assert_eq!(ply.intersects(&seg_ab), true);
 
-			assert_eq!(ab_linear.len(), 1);
-			assert_eq!([ab_linear[0].wkt()], [ln_ab.wkt()]);
-			assert_eq!(seg_ab.wkt(), ln_ab.wkt());
-			assert!(!seg_ab.intersects(&k));
-			assert!(!seg_ab.intersects(&seg_kn));
-			assert!(!seg_ab.intersects(&seg_kn));
-//			assert!(seg_ab.Intersects(seg_kn.Geometry())).IsFalse()
-//			assert!(seg_ab.Intersects(seg_ak)).IsTrue()
-//			assert!(seg_ab.Geometry().Intersects(seg_ak)).IsTrue()
-//			assert!(seg_ab.Intersects(seg_ak.Geometry())).IsTrue()
-//			assert!(seg_ab.Intersects(ply)).IsTrue()
-//			assert!(ply.Intersects(seg_ab)).IsTrue()
-//
-//			assert!(seg_kn.Intersects(ply)).IsFalse()
-//			assert!(ply.Intersects(seg_kn)).IsFalse()
-//
-//			assert!(seg_ab.Intersection(seg_ak)).Eql([]Point{a})
-//			assert!(seg_ab.Distance(seg_ak)).Equal(0.0)
-//			fmt.Println(seg_ab.Distance(seg_kn))
-//			assert!(feq(seg_ab.Distance(seg_kn), 2.8)).IsTrue()
+    assert!(!seg_kn.intersects(&ply));
+    assert!(!ply.intersects(&seg_kn));
+
+    assert_eq!(seg_ab.intersection(&seg_ak), [a])
+//			assert!(seg_ab.distance(seg_ak), 0.0)
+//			println!(seg_ab.distance(seg_kn))
+//			assert!(feq(seg_ab.distance(seg_kn), 2.8)).IsTrue()
 //
 //			pts := seg_ab.SegSegIntersection(seg_de)
 //			assert!(pts[0].Point).Equal(Point{-1.5, 2})
