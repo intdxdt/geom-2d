@@ -1,10 +1,3 @@
-# geom-2d
-`2d` geometry library for rust. Internally used an RTree([rstar](https://crates.io/crates/rstar))
-to create prepared geometries for fast `intersects, intersection, and distance` operations. 
-All intersections are reported as `Point{x:f64, y:f64}`.
-
-## example
-```rust
 use geom_2d::{Polygon, Geometry, LineString, Point};
 
 fn main() {
@@ -32,8 +25,3 @@ fn main() {
 fn compute_distance<T: Geometry>(g0: &T, g1: &T) -> f64 {
     g0.distance(g1)
 }
-```
-
-
-# state 
-` work in progress...`

@@ -25,7 +25,7 @@ fn test_point() {
 
     assert_eq!(a.wkt_string(),  "POINT(3 4)".to_string());
     assert!(a.intersects(&b));
-    assert_eq!(a.distance(&b), 0.);
+    assert_eq!(a.point_distance(&b), 0.);
     assert_eq!(test_geometry_distance(&a, &b), 0.);
     assert_eq!(test_geometry_distance(&a, &c), 5.);
     let a = Point::from_wkt("POINT(3 4)");
@@ -76,10 +76,10 @@ fn test_point() {
 #[test]
 fn test_distance_magnitude() {
     let pt: Point = [3., 0.].into();
-    assert_eq!(pt.distance(&Point { x: 0., y: 4. }), 5.0);
+    assert_eq!(pt.point_distance(&Point { x: 0., y: 4. }), 5.0);
     assert_eq!(pt.square_distance(&Point { x: 0., y: 4. }), 25.0);
     let pt: Point = [3., 4.].into();
-    assert_eq!(pt.distance(&Point { x: 4., y: 5. }), SQRT_2);
+    assert_eq!(pt.point_distance(&Point { x: 4., y: 5. }), SQRT_2);
     assert_eq!(pt.square_distance(&Point { x: 4., y: 5. }), 2.0);
 
     let pts: Points = vec![[0, 0], [4, 3], [0, 0], [1, 1]].into();
@@ -93,21 +93,21 @@ fn test_distance_magnitude() {
     assert_eq!(z, pts[2]);
     assert_eq!(o, pts[3]);
 
-    assert_eq!(o.distance(&z), SQRT_2);
+    assert_eq!(o.point_distance(&z), SQRT_2);
     let x = pt!(-3, 2);
-    assert_eq!(round(x.distance(&z), 8),
+    assert_eq!(round(x.point_distance(&z), 8),
                round(3.605551275463989, 8));
 
     assert_eq!(pt!(3, 4).magnitude(), 5.0);
     let x = pt!(3, 4);
-    assert_eq!(x.distance(&z), 5.0);
-    assert_eq!(a.distance(&b), 5.0);
+    assert_eq!(x.point_distance(&z), 5.0);
+    assert_eq!(a.point_distance(&b), 5.0);
     let x = pt!(3, 4);
     assert_eq!(x.square_distance(&z), 25.0);
     assert_eq!(pt!(3, 4).square_magnitude(), 25.0);
     assert_eq!(a.square_distance(&b), 25.0);
     let x = pt!(4.587, 0.);
-    assert_eq!(x.distance(&z), 4.587);
+    assert_eq!(x.point_distance(&z), 4.587);
 }
 
 #[test]
@@ -315,8 +315,8 @@ fn test_distance_to_vector() {
         dists[i] = tp.distance_to_segment(a, b)
     }
 
-    assert_eq!(pt!(30., 0.).distance_to_segment(a, a), a.distance(&pt!(30., 0.)));
-    assert_eq!(pt!(30., 0.).distance_to_segment(b, b), b.distance(&pt!(30., 0.)));
+    assert_eq!(pt!(30., 0.).distance_to_segment(a, a), a.point_distance(&pt!(30., 0.)));
+    assert_eq!(pt!(30., 0.).distance_to_segment(b, b), b.point_distance(&pt!(30., 0.)));
     assert_eq!(pt!(30., 0.).square_distance_to_segment(b, b), b.square_distance(&pt!(30., 0.)));
 
     for i in 0..tpoints.len() {

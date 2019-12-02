@@ -74,7 +74,7 @@ impl Point {
     }
 
     ///Computes distance between two points
-    pub fn distance(&self, other: &Self) -> f64 {
+    pub fn point_distance(&self, other: &Self) -> f64 {
         self.sub(other).magnitude()
     }
 

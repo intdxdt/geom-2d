@@ -79,7 +79,7 @@ impl LineString {
             std::mem::swap(&mut i, &mut j);
         }
         while i < j {
-            dist += self.coordinates[i].distance(&self.coordinates[i + 1]);
+            dist += self.coordinates[i].point_distance(&self.coordinates[i + 1]);
             i += 1;
         }
         dist
