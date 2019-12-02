@@ -1,6 +1,6 @@
 use super::*;
 use math_util::{round, Feq, SQRT_2, FRAC_PI_4};
-use rstar::Point as RStarPoint;
+use rtree_2d::Point as RStarPoint;
 use crate::{
     Point, Points, pts,
     Polygon, LineString, ln,
@@ -405,8 +405,8 @@ fn test_segments() {
     assert!(!seg_kn.intersects(&ply));
     assert!(!ply.intersects(&seg_kn));
 
-    assert_eq!(seg_ab.intersection(&seg_ak), [a])
-//			assert!(seg_ab.distance(seg_ak), 0.0)
+    assert_eq!(seg_ab.intersection(&seg_ak), [a]);
+    assert_eq!(seg_ab.distance(&seg_ak), 0.0)
 //			println!(seg_ab.distance(seg_kn))
 //			assert!(feq(seg_ab.distance(seg_kn), 2.8)).IsTrue()
 //

@@ -1,6 +1,7 @@
 use crate::{LinearRing, Point, Geometry, LineString, GeomType, parse_wkt};
 use bbox_2d::MBR;
 use std::collections::BTreeSet;
+use crate::distance;
 
 #[derive(Clone, Debug)]
 pub struct Polygon(pub Vec<LinearRing>);
@@ -131,6 +132,14 @@ impl Geometry for Polygon {
             a -= rng.area();
         }
         a
+    }
+
+    fn distance<T: Geometry>(&self,other: &T) -> f64 {
+        if self.intersects(other) {
+            0.0
+        } else {
+            distance::dist_as_lines(self.as_linear(), other.as_linear())
+        }
     }
 }
 

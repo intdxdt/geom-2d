@@ -17,6 +17,10 @@ impl MonoMBR {
         MonoMBR::new_mono(MBR::new_from_bounds(a.as_array(), b.as_array()))
     }
 
+    pub fn new_mono_ij(a: Point, b: Point, i: i32, j: i32) -> MonoMBR {
+        MonoMBR { mbr: MBR::new_from_bounds(a.as_array(), b.as_array()), i, j }
+    }
+
     pub fn new_mono(mbr: MBR) -> MonoMBR {
         MonoMBR { mbr,i: NULL_INDEX, j: NULL_INDEX }
     }

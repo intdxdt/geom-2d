@@ -1,5 +1,5 @@
 use crate::{Point, util, pt, LineString, Geometry, GeomType};
-use math_util::Feq;
+use math_util::{Feq, EPSILON};
 use bbox_2d::MBR;
 use crate::inter::{InterPoint, SELF_A, SELF_B, OTHER_A, OTHER_B, SELF_MASK, OTHER_MASK};
 use crate::util::{snap_to_zero, snap_to_zero_or_one};
@@ -79,6 +79,10 @@ impl Geometry for Segment {
 
     fn intersection<T: Geometry>(&self, other: &T) -> Vec<Point> {
         self.as_linestring().intersection(other)
+    }
+
+    fn distance<T: Geometry>(&self, other: &T) -> f64 {
+        self.as_linestring().distance(other)
     }
 }
 
@@ -216,3 +220,126 @@ fn update_coords_in_bounds(bbox: MBR, point: &Point, intpts: &mut Vec<InterPoint
     }
 }
 
+//Distance between two segments
+fn distance(sa: &Point, sb: &Point, oa: &Point, ob: &Point) -> f64 {
+    seg_seg_distance(sa, sb, oa, ob, f64::hypot)
+}
+
+//Distance between two segments
+fn square_distance(sa: &Point, sb: &Point, oa: &Point, ob: &Point) -> f64 {
+    return seg_seg_distance(sa, sb, oa, ob, |x, y| x * x + y * y);
+}
+
+//Distance between two segments with custom hypot function
+pub fn seg_seg_distance(sa: &Point, sb: &Point, oa: &Point, ob: &Point, hypot: fn(f64, f64) -> f64) -> f64 {
+    let mut dist;
+    let (x1, y1) = (sa.x, sa.y);
+    let (x2, y2) = (sb.x, sb.y);
+
+    let (x3, y3) = (oa.x, oa.y);
+    let (x4, y4) = (ob.x, ob.y);
+
+
+    let denom = (y4 - y3) * (x2 - x1) - (x4 - x3) * (y2 - y1);
+    let numera = (x4 - x3) * (y1 - y3) - (y4 - y3) * (x1 - x3);
+    let numerb = (x2 - x1) * (y1 - y3) - (y2 - y1) * (x1 - x3);
+
+    let mut pta = sa;
+    let mut ptb = sb;
+    if (denom.abs()) < EPSILON {
+        let is_aspt_a = sa.equals(&sb);
+        let is_aspt_b = oa.equals(&ob);
+
+        if is_aspt_a && is_aspt_b {
+            dist = hypot(x1 - x4, y1 - y4)
+        } else if is_aspt_a || is_aspt_b {
+            let (lna, lnb) = if is_aspt_a {
+                pta = sa;
+                (oa, ob)
+            } else if is_aspt_b {
+                pta = oa;
+                (sa, sb)
+            } else {
+                unreachable!()
+            };
+
+            dist = distance_to_point(lna, lnb, pta, hypot)
+        } else {
+            dist = min_dist_segment_endpoints(sa, sb, oa, ob, hypot)
+        }
+    } else {
+        let (mut use_pta, mut use_ptb) = (false, false);
+        let mua = numera / denom;
+        let mua = snap_to_zero_or_one(mua);
+
+        let mub = numerb / denom;
+        let mub = snap_to_zero_or_one(mub);
+
+        if mua < 0f64 || mua > 1f64 || mub < 0f64 || mub > 1f64 {
+            //the is intersection along the the segments
+            if mua < 0f64 {
+                pta = sa;
+                use_pta = true;
+            } else if mua > 1f64 {
+                pta = sb;
+                use_pta = true;
+            }
+
+            if mub < 0f64 {
+                ptb = oa;
+                use_ptb = true;
+            } else if mub > 1f64 {
+                ptb = ob;
+                use_ptb = true;
+            }
+
+            if use_pta && use_ptb {
+                dist = f64::min(
+                    distance_to_point(oa, ob, pta, hypot),
+                    distance_to_point(sa, sb, ptb, hypot),
+                )
+            } else if use_pta {
+                dist = distance_to_point(oa, ob, pta, hypot)
+            } else {
+                dist = distance_to_point(sa, sb, ptb, hypot)
+            }
+        } else {
+            dist = 0f64; //lines intersect
+        }
+    }
+    dist
+}
+
+fn min_dist_segment_endpoints(sa: &Point, sb: &Point, oa: &Point, ob: &Point, hypot: fn(f64, f64) -> f64) -> f64 {
+    let o_sa = distance_to_point(oa, ob, sa, hypot);
+    let o_sb = distance_to_point(oa, ob, sb, hypot);
+    let s_oa = distance_to_point(sa, sb, oa, hypot);
+    let s_ob = distance_to_point(sa, sb, ob, hypot);
+    (o_sa.min(o_sb)).min((s_oa.min(s_ob)))
+}
+
+//Distance from segment endpoints to point
+fn distance_to_point(sa: &Point, sb: &Point, pt: &Point, hypot: fn(f64, f64) -> f64) -> f64 {
+    let (ax, ay) = (sa.x, sa.y);
+    let (bx, by) = (sb.x, sb.y);
+    let (px, py) = (pt.x, pt.y);
+    let (dx, dy) = (bx - ax, by - ay);
+    let isz_x = dx.feq(0f64);
+    let isz_y = dy.feq(0f64);
+
+    if isz_x && isz_y {
+        //line with zero length
+        hypot(px - ax, py - ay)
+    } else {
+        let u = (((px - ax) * dx) + ((py - ay) * dy)) / (dx * dx + dy * dy);
+
+        let (c_ptx, c_pty) = if u < 0.0 {
+            (ax, ay)
+        } else if u > 1f64 {
+            (bx, by)
+        } else {
+            (ax + u * dx, ay + u * dy)
+        };
+        hypot(px - c_ptx, py - c_pty)
+    }
+}

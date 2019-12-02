@@ -1,6 +1,6 @@
 use super::*;
 use math_util::{round, Feq, SQRT_2, FRAC_PI_4};
-use rstar::Point as RStarPoint;
+use rtree_2d::Point as RStarPoint;
 
 #[test]
 fn test_point() {

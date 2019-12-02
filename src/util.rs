@@ -93,6 +93,26 @@ fn xy_mono_box(coordinates: &Vec<Point>, mbox: &mut MonoMBR, root_bbox: &mut Mon
     }
 }
 
+ pub fn segment_db(coords: &Vec<Point>) -> RTree<MonoMBR> {
+    let n = coords.len() - 1;
+    let mut items = Vec::with_capacity(n);
+    for i in 0..n {
+        let j = i + 1;
+        items.push(MonoMBR::new_mono_ij(coords[i], coords[j], i as i32, j as i32));
+    }
+    RTree::load(items)
+}
+
+pub fn query_bounds(coords: &Vec<Point>) -> Vec<MonoMBR> {
+    let n = coords.len() - 1;
+    let mut items = Vec::with_capacity(n);
+    for i in 0..n {
+        let j = i + 1;
+        items.push(MonoMBR::new_mono_ij(coords[i], coords[j], i as i32, j as i32))
+    }
+    items
+}
+
 
 ///find the sign of value -1, 0 , 1
 #[inline]

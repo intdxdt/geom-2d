@@ -2,8 +2,9 @@ use bbox_2d::MBR;
 use rtree_2d::RTree;
 use crate::{Point, Coordinate, LinearRing, MonoMBR, GeomType, Geometry};
 use crate::{util, segment, parse_wkt};
-use rtree_2d::{RTreeObject, PointDistance, AABB, Envelope};
+use rtree_2d::{KObj, RTreeObject, PointDistance, AABB, Envelope};
 use std::collections::BTreeSet;
+use crate::distance;
 
 #[derive(Clone, Debug)]
 pub struct LineString {
@@ -276,6 +277,8 @@ impl LineString {
     }
 }
 
+
+
 #[macro_export]
 macro_rules! ln {
     ($($x:expr),*) => {
@@ -337,7 +340,17 @@ impl Geometry for LineString {
             ptset.into_iter().collect()
         }
     }
+
+    fn distance<T: Geometry>(&self, other: &T) -> f64 {
+        if self.intersects(other) {
+            0.0
+        } else {
+            distance::dist_as_lines(self.as_linear(), other.as_linear())
+        }
+    }
 }
+
+
 
 impl From<&str> for LineString {
     fn from(wkt_str: &str) -> Self {

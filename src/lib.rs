@@ -8,6 +8,7 @@ pub mod util;
 pub mod chull;
 pub mod segment;
 pub mod inter;
+pub mod distance;
 
 pub use coordinate::Coordinate;
 pub use crate::point::{Point, Points};
@@ -31,16 +32,28 @@ pub enum GeomType {
 
 impl GeomType {
     pub fn is_point(&self) -> bool {
-        match self { GeomType::Point => true, _ => false }
+        match self {
+            GeomType::Point => true,
+            _ => false
+        }
     }
     pub fn is_line_string(&self) -> bool {
-        match self { GeomType::LineString => true, _ => false }
+        match self {
+            GeomType::LineString => true,
+            _ => false
+        }
     }
     pub fn is_segment(&self) -> bool {
-        match self { GeomType::Segment => true, _ => false }
+        match self {
+            GeomType::Segment => true,
+            _ => false
+        }
     }
     pub fn is_polygon(&self) -> bool {
-        match self { GeomType::Polygon => true, _ => false }
+        match self {
+            GeomType::Polygon => true,
+            _ => false
+        }
     }
 }
 
@@ -66,7 +79,7 @@ pub trait Geometry {
     fn intersection<T: Geometry>(&self, other: &T) -> Vec<Point>;
     fn linear_rings(&self) -> &Vec<LinearRing> { unimplemented!(); }
     fn area(&self) -> f64 { 0f64 }
-    //	fn Distance(Geometry) float64
+    fn distance<T: Geometry>(&self, other: &T) -> f64;
     //	fn bbox() MBR
 }
 

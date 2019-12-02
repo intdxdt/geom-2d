@@ -10,6 +10,7 @@ use serde::export::fmt::Error;
 use std::cmp::Ordering;
 use crate::{Geometry, LineString, GeomType, parse_wkt};
 use bbox_2d::MBR;
+use crate::distance;
 
 
 /// Point is a 2D (x:float, y:float) point type.
@@ -386,9 +387,17 @@ impl Geometry for Point {
     fn intersection<T: Geometry>(&self, other: &T) -> Vec<Point> {
        self.as_linear()[0].intersection(other)
     }
+
+    fn distance<T: Geometry>(&self,other: &T) -> f64 {
+        if self.intersects(other) {
+            0.0
+        } else {
+            distance::dist_as_lines(self.as_linear(), other.as_linear())
+        }
+    }
 }
 
-impl rstar::Point for Point {
+impl rtree_2d::Point for Point {
     type Scalar = f64;
     const DIMENSIONS: usize = 2;
 
