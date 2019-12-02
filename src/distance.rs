@@ -2,6 +2,7 @@ use crate::{LineString, util, Point, segment};
 use crate::mono::MonoMBR;
 use rtree_2d::KObj;
 
+
 ///Computes the distance between geometries
 pub fn dist_as_lines(lns1: Vec<LineString>, lns2: Vec<LineString>) -> f64 {
     let mut dist = std::f64::NAN;
@@ -29,14 +30,15 @@ fn line_line_dist(self_: &LineString, other: &LineString) -> f64 {
 }
 
 // brute force distance
-fn min_dist_brute_force(self_: &LineString, other: &LineString) -> f64 {
+pub fn min_dist_brute_force(self_: &LineString, other: &LineString) -> f64 {
     let mut dist = std::f64::MAX;
     let mut bln = false;
     let ln = &self_.coordinates;
     let ln2 = &other.coordinates;
     let (n1, n2) = (ln.len() - 1, ln2.len() - 1);
-    let (mut i, mut j) = (0usize, 0);
+    let mut i = 0usize;
     while !bln && i < n1 {
+        let mut j = 0;
         while !bln && j < n2 {
             let d = segment::seg_seg_distance(&ln[i], &ln[i + 1], &ln2[j], &ln2[j + 1], f64::hypot);
             if d < dist {
@@ -51,7 +53,7 @@ fn min_dist_brute_force(self_: &LineString, other: &LineString) -> f64 {
 }
 
 
-fn knn_min_linear_distance(a_coords: &Vec<Point>, b_coords: &Vec<Point>) -> f64 {
+pub fn knn_min_linear_distance(a_coords: &Vec<Point>, b_coords: &Vec<Point>) -> f64 {
     let (a, b) = if a_coords.len() > b_coords.len() {
         (b_coords, a_coords)
     } else {

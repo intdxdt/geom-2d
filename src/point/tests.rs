@@ -3,7 +3,31 @@ use math_util::{round, Feq, SQRT_2, FRAC_PI_4};
 use rtree_2d::Point as RStarPoint;
 
 #[test]
+#[should_panic]
+fn test_construct() {
+    let ln = Point::from_wkt("Points(5.6 7.9)");
+}
+
+#[test]
+#[should_panic]
+fn test_construct2() {
+    let ln = Point::from_wkt("LineString(5.6 7.9, 5.6 7.9)");
+}
+
+fn test_geometry_distance<T:Geometry>(a:&T, b:&T) -> f64{
+    a.distance(b)
+}
+#[test]
 fn test_point() {
+    let a:Point = "POINT(3 4)".into();
+    let b:Point = "POINT(3 4)".into();
+    let c:Point = "POINT(0 0)".into();
+
+    assert_eq!(a.wkt_string(),  "POINT(3 4)".to_string());
+    assert!(a.intersects(&b));
+    assert_eq!(a.distance(&b), 0.);
+    assert_eq!(test_geometry_distance(&a, &b), 0.);
+    assert_eq!(test_geometry_distance(&a, &c), 5.);
     let a = Point::from_wkt("POINT(3 4)");
 
     assert!(a.geom_type().is_point());

@@ -188,7 +188,7 @@ impl LineString {
         let mut res = Vec::new();
         let shell = &rings[0];
         let mut ptset = BTreeSet::new();
-        let bln = self.bounds.mbr.intersects(&shell.bbox());
+        let bln = self.bounds.intersects(&shell.line_string().bounds);
 
         if bln {
             let spts = self.linear_intersection(shell.line_string());
