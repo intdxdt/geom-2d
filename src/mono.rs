@@ -22,7 +22,7 @@ impl MonoMBR {
     }
 
     pub fn new_mono(mbr: MBR) -> MonoMBR {
-        MonoMBR { mbr,i: NULL_INDEX, j: NULL_INDEX }
+        MonoMBR { mbr, i: NULL_INDEX, j: NULL_INDEX }
     }
 
     pub fn bbox(&self) -> &MBR {
@@ -46,9 +46,9 @@ impl MonoMBR {
     }
 }
 
-impl Display for MonoMBR{
+impl Display for MonoMBR {
     fn fmt(&self, f: &mut Formatter<'_>) -> Result<(), Error> {
-        write!(f, "{}",  self.mbr)
+        write!(f, "{}", self.mbr)
     }
 }
 
@@ -79,12 +79,13 @@ impl PointDistance for MonoMBR {
 }
 
 
-
 #[cfg(test)]
 mod tests {
     use super::*;
+    use rtree_2d::RTree;
+
     #[test]
-    fn test_mono(){
+    fn test_mono() {
         let pt_0 = Point::new(0., 0.);
         let pt_1 = Point::new(3., 4.);
         let a = MonoMBR::new_mono_ij(pt_0, pt_1, 0, 7);
@@ -99,5 +100,40 @@ mod tests {
         assert_eq!(c.distance_square(&d), 25.);
         assert_eq!(a.wkt(), "POLYGON((0 0,0 4,3 4,3 0,0 0))");
         assert_eq!(format!("{}", a), "POLYGON((0 0,0 4,3 4,3 0,0 0))");
+    }
+
+
+    #[test]
+    fn test_rtree() {
+        let items = vec![
+            MonoMBR::new_mono_ij(Point { x: 0., y: 0. }, Point { x: 1., y: 1. }, 0, 3),
+            MonoMBR::new_mono_ij(Point { x: 1., y: 1. }, Point { x: 2., y: 2. }, 3, 7),
+            MonoMBR::new_mono_ij(Point { x: 4., y: 2. }, Point { x: 7.0, y: 3.0 }, 7, 11),
+        ];
+        let mut tree = RTree::load(items);
+        assert_eq!(tree.size(), 3);
+        let neib = tree.nearest_neighbor(&Point { x: 0.5, y: 0.5 });
+        assert!(neib.is_some());
+
+        let query = MonoMBR::new_mono_ij(Point { x: 2.5, y: 0.5 }, Point { x: 4.0, y: 2.5 }, 0, 9);
+        let res = tree.search(&query.envelope());
+        for r in res.into_iter() {
+            assert!(tree.contains(r));
+        }
+        let at = MonoMBR::new_mono_ij(Point { x: 1., y: 1. }, Point { x: 2., y: 2. }, 3, 7);
+        let res = tree.remove(&at);
+        assert_eq!(tree.size(), 2);
+        assert!(!tree.contains(&at));
+
+        match res {
+            Some(v) => {
+                println!("rm = {}", v)
+            }
+            None => println!("None!")
+        }
+        println!("tree size = {}", tree.size());
+        tree.each(|v| println!("{}", v.wkt()));
+        let rt = tree.rtree();
+        assert_eq!(rt.size(), 2);
     }
 }
