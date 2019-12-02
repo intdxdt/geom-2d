@@ -23,11 +23,13 @@ impl Segment {
     pub fn b(&self) -> &Point {
         &self.coordinates[1]
     }
-    //Segment as line string
+
+    ///Segment as line string
     pub fn as_linestring(&self) -> LineString {
         (&self.coordinates[..]).into()
     }
-    //Side of pt to segement
+
+    ///Side of pt to segement
     pub fn side_of(&self, pt: Point) -> Side {
         pt.side_of(self.a(), self.b())
     }
@@ -42,7 +44,7 @@ impl Segment {
         return intersection(self.a(), self.b(), other.a(), other.b());
     }
 
-    //Is segment
+    ///Is segment
     pub fn is_simple(&self) -> bool {
         true
     }

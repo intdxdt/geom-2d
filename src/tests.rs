@@ -1,5 +1,5 @@
 use super::*;
-use math_util::{round, Feq, SQRT_2, FRAC_PI_4};
+use math_util::{round, feq, Feq, SQRT_2, FRAC_PI_4};
 use rtree_2d::Point as RStarPoint;
 use crate::{
     Point, Points, pts,
@@ -406,35 +406,33 @@ fn test_segments() {
     assert!(!ply.intersects(&seg_kn));
 
     assert_eq!(seg_ab.intersection(&seg_ak), [a]);
-    assert_eq!(seg_ab.distance(&seg_ak), 0.0)
-//			println!(seg_ab.distance(seg_kn))
-//			assert!(feq(seg_ab.distance(seg_kn), 2.8)).IsTrue()
-//
-//			pts := seg_ab.SegSegIntersection(seg_de)
-//			assert!(pts[0].Point).Equal(Point{-1.5, 2})
-//
-//			pts = seg_ab.SegSegIntersection(seg_cd)
-//			ok := len(pts) > 0
-//			assert!(ok).IsTrue()
-//			assert!(pts[0].Point).Equal(Point{-1.5, 2})
-//			assert!(pts[1].Point).Equal(Point{0.0, 0.0})
-//
-//			pts = seg_gkh.SegSegIntersection(seg_cd)
-//			assert!(len(pts)).Equal(1) //at h
-//
-//			pts = seg_hi.SegSegIntersection(seg_cd)
-//			assert!(len(pts)).Equal(2) //at h, i
-//
-//			pts = seg_hi.SegSegIntersection(seg_ab)
-//			ok = len(pts) > 0
-//			assert!(seg_hi.SegSegIntersects(seg_ab)).Equal(ok)
-//			assert!(ok).IsFalse()
-//			assert!(len(pts)).Equal(0) //empty
-//
-//			pts = seg_ak.SegSegIntersection(seg_kn)
-//			ok = len(pts) > 0
-//			assert!(seg_ak.SegSegIntersects(seg_kn)).Equal(ok)
-//			assert!(ok).IsTrue()
-//			assert!(len(pts)).Equal(1)                  //at k
-//			assert!(pts[0].Point.Equals2D(&k)).IsTrue() //k
+    assert_eq!(seg_ab.distance(&seg_ak), 0.0);
+    assert!(feq(seg_ab.distance(&seg_kn), 2.8));
+
+    let pts = seg_ab.seg_seg_intersection(&seg_de);
+    assert_eq!(pts[0].pt, Point { x: -1.5, y: 2. });
+
+    let pts = seg_ab.seg_seg_intersection(&seg_cd);
+    assert!(pts.len() > 0);
+    assert_eq!(pts[0].pt, [-1.5, 2.].into());
+    assert_eq!(pts[1].pt, [0.0, 0.0].into());
+
+    let pts = seg_gkh.seg_seg_intersection(&seg_cd);
+    assert_eq!(pts.len(), 1); //at h
+
+    let pts = seg_hi.seg_seg_intersection(&seg_cd);
+    assert_eq!(pts.len(), 2);//at h, i
+
+    let pts = seg_hi.seg_seg_intersection(&seg_ab);
+    let ok = pts.len() > 0;
+    assert_eq!(seg_hi.seg_seg_intersects(&seg_ab), ok);
+    assert!(!ok);
+    assert_eq!(pts.len(), 0); //empty
+
+    let pts = seg_ak.seg_seg_intersection(&seg_kn);
+    let ok = pts.len() > 0;
+    assert!(seg_ak.seg_seg_intersects(&seg_kn), ok);
+    assert!(ok);
+    assert_eq!(pts.len(), 1);      //at k
+    assert!(pts[0].pt.equals(&k)); //k
 }
