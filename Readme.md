@@ -2,6 +2,30 @@
 `2d` geometry library for rust. Internally used an RTree([rstar](https://crates.io/crates/rstar))
 to create prepared geometries for fast `intersects, intersection, and distance` operations. 
 All intersections are reported as `Point{x:f64, y:f64}`.
+## Geometry types 
+### `Point`
+```rust
+struct Point { x: f64, y: f64, }
+```
+
+### `Segment`
+```rust
+struct Segment { coordinates: [Point; 2], }
+```
+
+### `LineString`
+```rust
+pub struct LineString {
+    coordinates: Vec<Point>,
+    bounds: MonoMBR,
+    // some fields omitted
+}
+```
+
+`Polygon`
+```rust
+struct Polygon(Vec<LinearRing>);
+```
 
 ## example
 ```rust
@@ -34,6 +58,8 @@ fn compute_distance<T: Geometry>(g0: &T, g1: &T) -> f64 {
 }
 ```
 
-
-# state 
+## state 
 ` work in progress...`
+
+## lic 
+`MIT`
