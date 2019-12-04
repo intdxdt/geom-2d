@@ -265,7 +265,7 @@ pub fn seg_seg_distance(sa: &Point, sb: &Point, oa: &Point, ob: &Point, hypot: f
                 unreachable!()
             };
 
-            dist = distance_to_point(lna, lnb, pta, hypot)
+            dist = dist_to_point(lna, lnb, pta, hypot)
         } else {
             dist = min_dist_segment_endpoints(sa, sb, oa, ob, hypot)
         }
@@ -297,13 +297,13 @@ pub fn seg_seg_distance(sa: &Point, sb: &Point, oa: &Point, ob: &Point, hypot: f
 
             if use_pta && use_ptb {
                 dist = f64::min(
-                    distance_to_point(oa, ob, pta, hypot),
-                    distance_to_point(sa, sb, ptb, hypot),
+                    dist_to_point(oa, ob, pta, hypot),
+                    dist_to_point(sa, sb, ptb, hypot),
                 )
             } else if use_pta {
-                dist = distance_to_point(oa, ob, pta, hypot)
+                dist = dist_to_point(oa, ob, pta, hypot)
             } else {
-                dist = distance_to_point(sa, sb, ptb, hypot)
+                dist = dist_to_point(sa, sb, ptb, hypot)
             }
         } else {
             dist = 0f64; //lines intersect
@@ -313,15 +313,25 @@ pub fn seg_seg_distance(sa: &Point, sb: &Point, oa: &Point, ob: &Point, hypot: f
 }
 
 fn min_dist_segment_endpoints(sa: &Point, sb: &Point, oa: &Point, ob: &Point, hypot: fn(f64, f64) -> f64) -> f64 {
-    let o_sa = distance_to_point(oa, ob, sa, hypot);
-    let o_sb = distance_to_point(oa, ob, sb, hypot);
-    let s_oa = distance_to_point(sa, sb, oa, hypot);
-    let s_ob = distance_to_point(sa, sb, ob, hypot);
+    let o_sa = dist_to_point(oa, ob, sa, hypot);
+    let o_sb = dist_to_point(oa, ob, sb, hypot);
+    let s_oa = dist_to_point(sa, sb, oa, hypot);
+    let s_ob = dist_to_point(sa, sb, ob, hypot);
     (o_sa.min(o_sb)).min((s_oa.min(s_ob)))
 }
 
 ///Distance from segment endpoints to point
-pub fn distance_to_point(sa: &Point, sb: &Point, pt: &Point, hypot: fn(f64, f64) -> f64) -> f64 {
+pub fn distance_to_point(sa: &Point, sb: &Point, pt: &Point) -> f64 {
+    dist_to_point(sa, sb, pt, f64::hypot)
+}
+
+///Square Distance from segment endpoints to point
+pub fn square_distance_to_point(sa: &Point, sb: &Point, pt: &Point) -> f64 {
+    dist_to_point(sa, sb, pt, |x, y| x * x + y * y)
+}
+
+///Distance from segment endpoints to point
+fn dist_to_point(sa: &Point, sb: &Point, pt: &Point, hypot: fn(f64, f64) -> f64) -> f64 {
     let (ax, ay) = (sa.x, sa.y);
     let (bx, by) = (sb.x, sb.y);
     let (px, py) = (pt.x, pt.y);
