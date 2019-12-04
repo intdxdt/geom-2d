@@ -320,8 +320,8 @@ fn min_dist_segment_endpoints(sa: &Point, sb: &Point, oa: &Point, ob: &Point, hy
     (o_sa.min(o_sb)).min((s_oa.min(s_ob)))
 }
 
-//Distance from segment endpoints to point
-fn distance_to_point(sa: &Point, sb: &Point, pt: &Point, hypot: fn(f64, f64) -> f64) -> f64 {
+///Distance from segment endpoints to point
+pub fn distance_to_point(sa: &Point, sb: &Point, pt: &Point, hypot: fn(f64, f64) -> f64) -> f64 {
     let (ax, ay) = (sa.x, sa.y);
     let (bx, by) = (sb.x, sb.y);
     let (px, py) = (pt.x, pt.y);
