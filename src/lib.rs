@@ -11,9 +11,13 @@ pub mod inter;
 pub mod distance;
 
 pub use coordinate::Coordinate;
-pub use crate::point::{Point, Points};
+pub use crate::point::{
+    Point, Points,
+    reverse_direction,
+    deflection_angle
+};
 pub use crate::line::LineString;
-pub use crate::segment::{Segment};
+pub use crate::segment::Segment;
 pub use crate::ring::LinearRing;
 pub use crate::polygon::Polygon;
 pub use crate::wkt::parse_wkt;

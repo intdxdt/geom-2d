@@ -120,24 +120,6 @@ impl Point {
         return d;
     }
 
-    ///Revdir computes the reversed direction from a foward direction
-    pub fn reverse_direction(d: f64) -> f64 {
-        let mut r = d - PI;
-        if d < PI {
-            r = d + PI;
-        }
-        return r;
-    }
-
-    ///deflection angle
-    pub fn deflection_angle(bearing1: f64, bearing2: f64) -> f64 {
-        let mut a = bearing2 - Point::reverse_direction(bearing1);
-        if a < 0.0 {
-            a += TAU;
-        }
-        return PI - a;
-    }
-
 
     ///Unit vector of point
     pub fn unit_vector(&self) -> Point {
@@ -239,6 +221,24 @@ impl Point {
         format!("{} {}", self.x, self.y)
     }
 }
+
+    ///Computes the reversed direction from a foward direction
+    pub fn reverse_direction(d: f64) -> f64 {
+        let mut r = d - PI;
+        if d < PI {
+            r = d + PI;
+        }
+        return r;
+    }
+
+    ///deflection angle
+    pub fn deflection_angle(bearing1: f64, bearing2: f64) -> f64 {
+        let mut a = bearing2 - reverse_direction(bearing1);
+        if a < 0.0 {
+            a += TAU;
+        }
+        return PI - a;
+    }
 
 pub struct Points {
     pub points: Vec<Point>

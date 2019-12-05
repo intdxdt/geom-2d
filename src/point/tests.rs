@@ -200,9 +200,9 @@ fn test_direction_rev_direction() {
     let a = pt!(0, 0);
     let b = pt!(-1, 0);
     let v = b.sub(&a);
-    assert_eq!(Point::reverse_direction(v.direction()), 0.0);
-    assert_eq!(Point::reverse_direction(FRAC_PI_4), FRAC_PI_4 + PI);
-    assert_eq!(Point::reverse_direction(FRAC_PI_4 + PI), FRAC_PI_4);
+    assert_eq!(reverse_direction(v.direction()), 0.0);
+    assert_eq!(reverse_direction(FRAC_PI_4), FRAC_PI_4 + PI);
+    assert_eq!(reverse_direction(FRAC_PI_4 + PI), FRAC_PI_4);
 }
 
 #[test]
@@ -213,16 +213,16 @@ fn test_deflection_extend() {
     let v1 = ln1[1].sub(&ln1[0]);
 
     assert_eq!(
-        round(Point::deflection_angle(v0.direction(), v1.direction()), 10),
+        round(deflection_angle(v0.direction(), v1.direction()), 10),
         round(93.17983011986422f64.to_radians(), 10));
     assert_eq!(
-        round(Point::deflection_angle(v0.direction(), v0.direction()), 10),
+        round(deflection_angle(v0.direction(), v0.direction()), 10),
         0f64.to_radians());
 
     let ln1 = [pt![20, 30], pt![20, 60]];
     let v1 = ln1[1].sub(&ln1[0]);
     assert_eq!(
-        round(Point::deflection_angle(v0.direction(), v1.direction()), 10),
+        round(deflection_angle(v0.direction(), v1.direction()), 10),
         round(-33.690067525979806f64.to_radians(), 10), );
 
     const PRECISION: i32 = 8;
