@@ -14,7 +14,7 @@ use crate::distance;
 
 
 /// Point is a 2D (x:float, y:float) point type.
-/// float : f32 & f64 - required for most computations
+/// float : f64 - required for most computations
 /// requiring area, distance, trigonometry, etc.
 #[derive(Serialize, Deserialize, Copy, Clone, PartialOrd, Debug)]
 pub struct Point {
@@ -222,23 +222,24 @@ impl Point {
     }
 }
 
-    ///Computes the reversed direction from a foward direction
-    pub fn reverse_direction(d: f64) -> f64 {
-        let mut r = d - PI;
-        if d < PI {
-            r = d + PI;
-        }
-        return r;
-    }
 
-    ///deflection angle
-    pub fn deflection_angle(bearing1: f64, bearing2: f64) -> f64 {
-        let mut a = bearing2 - reverse_direction(bearing1);
-        if a < 0.0 {
-            a += TAU;
-        }
-        return PI - a;
+///Computes the reversed direction from a foward direction
+pub fn reverse_direction(d: f64) -> f64 {
+    let mut r = d - PI;
+    if d < PI {
+        r = d + PI;
     }
+    return r;
+}
+
+///deflection angle
+pub fn deflection_angle(bearing1: f64, bearing2: f64) -> f64 {
+    let mut a = bearing2 - reverse_direction(bearing1);
+    if a < 0.0 {
+        a += TAU;
+    }
+    return PI - a;
+}
 
 pub struct Points {
     pub points: Vec<Point>
@@ -385,10 +386,10 @@ impl Geometry for Point {
     }
 
     fn intersection<T: Geometry>(&self, other: &T) -> Vec<Point> {
-       self.as_linear()[0].intersection(other)
+        self.as_linear()[0].intersection(other)
     }
 
-    fn distance<T: Geometry>(&self,other: &T) -> f64 {
+    fn distance<T: Geometry>(&self, other: &T) -> f64 {
         if self.intersects(other) {
             0.0
         } else {
@@ -452,7 +453,7 @@ macro_rules! pt {
 }
 
 #[macro_export]
-macro_rules! pts{
+macro_rules! pts {
     ($($x:expr),*) => {
         {
             let mut vec:Vec<Point> = Vec::new();

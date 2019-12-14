@@ -1,7 +1,7 @@
 use crate::{Point, util, pt, LineString, Geometry, GeomType};
 use math_util::{Feq, EPSILON};
 use bbox_2d::MBR;
-use crate::inter::{InterPoint, SELF_A, SELF_B, OTHER_A, OTHER_B, SELF_MASK, OTHER_MASK};
+use crate::inter::{InterPoint, SELF_A, SELF_B, OTHER_A, OTHER_B};
 use crate::util::{snap_to_zero, snap_to_zero_or_one};
 use side_rel::Side;
 
@@ -223,18 +223,18 @@ fn update_coords_in_bounds(bbox: MBR, point: &Point, intpts: &mut Vec<InterPoint
 }
 
 //Distance between two segments
-fn distance(sa: &Point, sb: &Point, oa: &Point, ob: &Point) -> f64 {
+pub fn distance(sa: &Point, sb: &Point, oa: &Point, ob: &Point) -> f64 {
     seg_seg_distance(sa, sb, oa, ob, f64::hypot)
 }
 
 //Distance between two segments
-fn square_distance(sa: &Point, sb: &Point, oa: &Point, ob: &Point) -> f64 {
+pub fn square_distance(sa: &Point, sb: &Point, oa: &Point, ob: &Point) -> f64 {
     return seg_seg_distance(sa, sb, oa, ob, |x, y| x * x + y * y);
 }
 
 //Distance between two segments with custom hypot function
 pub fn seg_seg_distance(sa: &Point, sb: &Point, oa: &Point, ob: &Point, hypot: fn(f64, f64) -> f64) -> f64 {
-    let mut dist;
+    let dist;
     let (x1, y1) = (sa.x, sa.y);
     let (x2, y2) = (sb.x, sb.y);
 
@@ -317,7 +317,7 @@ fn min_dist_segment_endpoints(sa: &Point, sb: &Point, oa: &Point, ob: &Point, hy
     let o_sb = dist_to_point(oa, ob, sb, hypot);
     let s_oa = dist_to_point(sa, sb, oa, hypot);
     let s_ob = dist_to_point(sa, sb, ob, hypot);
-    (o_sa.min(o_sb)).min((s_oa.min(s_ob)))
+    (o_sa.min(o_sb)).min(s_oa.min(s_ob))
 }
 
 ///Distance from segment endpoints to point

@@ -1,5 +1,6 @@
 pub mod wkt;
 pub mod point;
+pub mod pointz;
 pub mod line;
 pub mod ring;
 pub mod polygon;
@@ -16,6 +17,7 @@ pub use crate::point::{
     reverse_direction,
     deflection_angle
 };
+pub use crate::pointz::{PointZ, PointZs};
 pub use crate::line::LineString;
 pub use crate::segment::Segment;
 pub use crate::ring::LinearRing;

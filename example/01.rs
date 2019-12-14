@@ -22,6 +22,3 @@ fn main() {
     println!("pt <distance> ln = {}", pt.distance(&ln));
 }
 
-fn compute_distance<T: Geometry>(g0: &T, g1: &T) -> f64 {
-    g0.distance(g1)
-}

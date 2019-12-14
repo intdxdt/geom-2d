@@ -1,8 +1,8 @@
 use bbox_2d::MBR;
 use rtree_2d::RTree;
-use crate::{Point, Coordinate, LinearRing, MonoMBR, GeomType, Geometry};
+use crate::{Point, LinearRing, MonoMBR, GeomType, Geometry};
 use crate::{util, segment, parse_wkt};
-use rtree_2d::{KObj, RTreeObject, PointDistance, AABB, Envelope};
+use rtree_2d::RTreeObject;
 use std::collections::BTreeSet;
 use crate::distance;
 

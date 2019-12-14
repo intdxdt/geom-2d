@@ -2,7 +2,7 @@ use bbox_2d::MBR;
 use math_util::Feq;
 use rtree_2d::RTree;
 use crate::mono::NULL_INDEX;
-use crate::{Point, Coordinate, MonoMBR, GeomType, Geometry};
+use crate::{Point, Coordinate, MonoMBR};
 
 const MINI_MONO_SIZE: i32 = 8;
 

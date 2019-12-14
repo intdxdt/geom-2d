@@ -1,6 +1,4 @@
-use crate::{Point, util};
-use math_util::Feq;
-use bbox_2d::MBR;
+use crate::Point;
 use std::cmp::Ordering;
 
 

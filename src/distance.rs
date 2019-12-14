@@ -44,7 +44,7 @@ pub fn min_dist_brute_force(self_: &LineString, other: &LineString) -> f64 {
             if d < dist {
                 dist = d;
             }
-            bln = (dist == 0.0);
+            bln = dist == 0f64;
             j += 1;
         }
         i += 1;

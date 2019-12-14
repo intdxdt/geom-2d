@@ -90,13 +90,13 @@ mod tests {
         let pt_1 = Point::new(3., 4.);
         let a = MonoMBR::new_mono_ij(pt_0, pt_1, 0, 7);
         let mut b = MonoMBR::new(pt_0, pt_1);
-        let mut c = MonoMBR::new(pt_0, pt_0);
-        let mut d = MonoMBR::new(pt_1, pt_1);
+        let c = MonoMBR::new(pt_0, pt_0);
+        let d = MonoMBR::new(pt_1, pt_1);
         assert_eq!(a, b);
         b.i = 0;
         b.j = 7;
         assert_eq!(a, b);
-        assert!(a == b);
+        assert_eq!(a == b, true);
         assert_eq!(c.distance_square(&d), 25.);
         assert_eq!(a.wkt(), "POLYGON((0 0,0 4,3 4,3 0,0 0))");
         assert_eq!(format!("{}", a), "POLYGON((0 0,0 4,3 4,3 0,0 0))");
