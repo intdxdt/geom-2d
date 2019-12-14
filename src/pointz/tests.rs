@@ -1,9 +1,12 @@
 use super::*;
+use crate::{Point, pt};
 use rtree_2d::Point as RStarPoint;
 
 #[test]
-fn test_point() {
+fn test_pointz() {
     let a = PointZ::new(3., 4., 0.45);
+    let a_wkt = format!("{}", a);
+    assert_eq!(a_wkt, "POINT M(3 4 0.45)".to_string());
 
     assert_eq!(a.val(0), 3.);
     assert_eq!(a.val(1), 4.);
@@ -17,6 +20,11 @@ fn test_point() {
     assert_eq!(b.nth(2), 4.5);
     assert_eq!(b.as_tuple(), (2., 1.5, 4.5));
     assert_eq!(b.as_array(), [2., 1.5, 4.5]);
+    assert_eq!(b.as_point(), pt![2., 1.5]);
+
+    let c = PointZ::generate(|_| 0.3);
+    assert_eq!(c.as_tuple(), (0.3, 0.3, 0.3));
+
 
     let pa = ptz![3, 4, 7];
     let mut m_pa = PointZ::from_array([3.0, 4.0, 6.7]);
@@ -45,18 +53,27 @@ fn test_point() {
 
 #[test]
 fn test_distance_magnitude() {
-    let pts: PointZs = vec![[0, 0, 0], [4, 3, 0], [0, 0, 0], [1, 1, 0]].into();
-
+    let pts: PointZs = vec![[0, 0, 0], [4, 3, 0], [0, 0, 0], [1, 1, 0], [4, 5, 6], [7, 8, 9]].into();
+    let q = [4., 5., 6.];
+    let zv = vec![7., 8., 9., 99.9];
     let a = ptz![0, 0, 0];
-    let b = ptz![4, 3, 0];
-    let z = ptz![0, 0, 0];
-    let o = ptz![1, 1, 0];
+    let b: PointZ = (4, 3, 0).into();
+    let z: PointZ = [0, 0, 0].into();
+    let o: PointZ = (&[1, 1, 0]).into();
+    let qz: PointZ = (&q[..]).into();
+    let zz: PointZ = (&zv).into();
     assert_eq!(a, pts[0]);
     assert_eq!(b, pts[1]);
     assert_eq!(z, pts[2]);
     assert_eq!(o, pts[3]);
-}
+    assert_eq!(qz, pts[4]);
+    assert_eq!(zz, pts[5]);
 
+    let pts: PointZs = vec![[4, 5, 6], [0, 0, 0], [7, 8, 9],[0, 0, 0], [4, 3, 0], [1, 1, 0]].into();
+    let mut ptzs = pts.points;
+    ptzs.sort();
+    println!("{}", ptzs[0])
+}
 
 #[test]
 fn test_serialize_deserialize() {

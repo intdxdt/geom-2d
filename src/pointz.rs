@@ -1,7 +1,7 @@
 use serde::{Serialize, Deserialize};
 use coordinate::Coordinate;
 use std::fmt::Debug;
-use math_util::{num, Feq,  PI, TAU, NumCast};
+use math_util::{num, Feq,  NumCast};
 use std::ops::{Index, IndexMut};
 use serde::export::Formatter;
 use serde::export::fmt::Error;
@@ -56,23 +56,6 @@ impl PointZ {
     }
 }
 
-///Computes the reversed direction from a foward direction
-pub fn reverse_direction(d: f64) -> f64 {
-    let mut r = d - PI;
-    if d < PI {
-        r = d + PI;
-    }
-    return r;
-}
-
-///deflection angle
-pub fn deflection_angle(bearing1: f64, bearing2: f64) -> f64 {
-    let mut a = bearing2 - reverse_direction(bearing1);
-    if a < 0.0 {
-        a += TAU;
-    }
-    return PI - a;
-}
 
 pub struct PointZs {
     pub points: Vec<PointZ>
