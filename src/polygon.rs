@@ -72,7 +72,7 @@ impl Geometry for Polygon {
         GeomType::Polygon
     }
 
-    fn intersects<T>(&self, other: &T) -> bool where T: Geometry {
+    fn intersects(&self, other: &dyn Geometry) -> bool {
         let mut bln = false;
         if other.geom_type().is_polygon() {
             if self.bbox().intersects(&other.bbox()) {
@@ -95,7 +95,7 @@ impl Geometry for Polygon {
         bln
     }
 
-    fn intersection<T: Geometry>(&self, other: &T) -> Vec<Point> {
+    fn intersection(&self, other: &dyn Geometry) -> Vec<Point> {
         let mut ptset = BTreeSet::new();
         if other.geom_type().is_polygon() {
 
@@ -134,7 +134,7 @@ impl Geometry for Polygon {
         a
     }
 
-    fn distance<T: Geometry>(&self,other: &T) -> f64 {
+    fn distance(&self,other: &dyn Geometry) -> f64 {
         if self.intersects(other) {
             0.0
         } else {

@@ -381,15 +381,15 @@ impl Geometry for Point {
         GeomType::Point
     }
 
-    fn intersects<T>(&self, other: &T) -> bool where T: Geometry {
+    fn intersects(&self, other: &dyn Geometry) -> bool{
         self.as_linear()[0].intersects(other)
     }
 
-    fn intersection<T: Geometry>(&self, other: &T) -> Vec<Point> {
+    fn intersection(&self, other: &dyn Geometry) -> Vec<Point> {
         self.as_linear()[0].intersection(other)
     }
 
-    fn distance<T: Geometry>(&self, other: &T) -> f64 {
+    fn distance(&self, other: &dyn Geometry) -> f64 {
         if self.intersects(other) {
             0.0
         } else {

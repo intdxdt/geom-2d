@@ -1,6 +1,5 @@
 use geom_2d::{Polygon, Geometry, LineString, Point, PointZ};
 use std::ops::Index;
-use std::process::Output;
 
 fn main() {
     let a: Polygon = "POLYGON (( 450 600, 450 725, 575 725, 575 600, 450 600 ))".into();

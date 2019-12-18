@@ -307,7 +307,7 @@ impl Geometry for LineString {
         GeomType::LineString
     }
 
-    fn intersects<T: Geometry>(&self, other: &T) -> bool {
+    fn intersects(&self, other: &dyn Geometry) -> bool {
         if self.bounds.mbr.disjoint(&other.bbox()) {
             false
         } else if other.geom_type().is_polygon() {
@@ -326,7 +326,7 @@ impl Geometry for LineString {
     }
 
     //Checks if pt intersection other geometry
-    fn intersection<T: Geometry>(&self, other: &T) -> Vec<Point> {
+    fn intersection(&self, other: &dyn Geometry) -> Vec<Point> {
         if other.geom_type().is_polygon() {
             self.intersection_polygon_rings(other.linear_rings())
         } else {
@@ -341,7 +341,7 @@ impl Geometry for LineString {
         }
     }
 
-    fn distance<T: Geometry>(&self, other: &T) -> f64 {
+    fn distance(&self, other: &dyn Geometry) -> f64 {
         if self.intersects(other) {
             0.0
         } else {

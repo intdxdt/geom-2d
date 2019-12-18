@@ -81,11 +81,11 @@ pub trait Geometry {
     fn as_linear(&self) -> Vec<LineString>;
     fn wkt_string(&self) -> String;
     fn geom_type(&self) -> GeomType;
-    fn intersects<T: Geometry>(&self, other: &T) -> bool;
-    fn intersection<T: Geometry>(&self, other: &T) -> Vec<Point>;
+    fn intersects(&self, other: &dyn Geometry) -> bool;
+    fn intersection(&self, other: &dyn Geometry) -> Vec<Point>;
     fn linear_rings(&self) -> &Vec<LinearRing> { unimplemented!(); }
     fn area(&self) -> f64 { 0f64 }
-    fn distance<T: Geometry>(&self, other: &T) -> f64;
+    fn distance(&self, other: &dyn Geometry) -> f64;
     //	fn bbox() MBR
 }
 
