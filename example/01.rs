@@ -1,4 +1,6 @@
-use geom_2d::{Polygon, Geometry, LineString, Point};
+use geom_2d::{Polygon, Geometry, LineString, Point, PointZ};
+use std::ops::Index;
+use std::process::Output;
 
 fn main() {
     let a: Polygon = "POLYGON (( 450 600, 450 725, 575 725, 575 600, 450 600 ))".into();
@@ -20,5 +22,16 @@ fn main() {
     println!("a  <distance> ln = {}", a.distance(&ln));
     println!("a  <distance> pt = {}", a.distance(&pt));
     println!("pt <distance> ln = {}", pt.distance(&ln));
+
+    let mut pts : Vec<&dyn Index<usize, Output=f64>> = vec![];
+    let (a, b) = (Point::new(3., 4.), Point::new(3.2, 4.7));
+    let (c, d) = (PointZ::new(31., 4., 9.7), PointZ::new(3.2, 4.7, 9.3));
+    pts.push(&a);
+    pts.push(&b);
+    pts.push(&c);
+    pts.push(&d);
+    println!("{}", pts.len());
+    println!("{}", pts[2][0]);
+
 }
 
