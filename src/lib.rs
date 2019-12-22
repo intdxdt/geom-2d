@@ -76,7 +76,7 @@ impl std::fmt::Display for GeomType {
 }
 
 
-pub trait Geometry {
+pub trait Geometry  {
     fn bbox(&self) -> MBR;
     fn as_linear(&self) -> Vec<LineString>;
     fn wkt_string(&self) -> String;
@@ -86,7 +86,6 @@ pub trait Geometry {
     fn linear_rings(&self) -> &Vec<LinearRing> { unimplemented!(); }
     fn area(&self) -> f64 { 0f64 }
     fn distance(&self, other: &dyn Geometry) -> f64;
-    //	fn bbox() MBR
 }
 
 #[cfg(test)]

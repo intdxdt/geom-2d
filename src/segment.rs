@@ -5,6 +5,7 @@ use crate::inter::{InterPoint, SELF_A, SELF_B, OTHER_A, OTHER_B};
 use crate::util::{snap_to_zero, snap_to_zero_or_one};
 use side_rel::Side;
 
+#[derive(Copy, Clone)]
 pub struct Segment {
     pub coordinates: [Point; 2]
 }
