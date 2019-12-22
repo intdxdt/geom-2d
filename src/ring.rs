@@ -8,9 +8,8 @@ pub struct LinearRing(pub LineString);
 impl LinearRing {
     ///New linear ring
     pub fn new(coords: &[Point]) -> LinearRing {
-        let mut coordinates = Vec::with_capacity(coords.len());
-        coordinates.extend_from_slice(coords);
-        let n = coords.len();
+        let mut coordinates = coords.to_vec();
+        let n = coordinates.len();
         if n > 1 {
             if !is_ring(&coordinates) {
                 coordinates.push(coordinates[0])

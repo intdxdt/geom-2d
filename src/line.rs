@@ -17,8 +17,7 @@ pub struct LineString {
 impl LineString {
     ///New LineString
     pub fn new(coords: &[Point]) -> LineString {
-        let mut coordinates = Vec::with_capacity(coords.len());
-        coordinates.extend_from_slice(coords);
+        let coordinates = coords.to_vec();
         if coordinates.len() < 2 {
             panic!("a linestring must have at least 2 coordinates");
         }
@@ -197,13 +196,9 @@ impl LineString {
             }
             //inside shell, does it touch hole boundary ?
             for hole in rings[1..].iter() {
-//                let hpts = self.linear_intersection(hole.line_string());
                 self.linear_intersection(hole.line_string())
                     .iter()
                     .for_each(|v| { ptset.insert(*v); });
-//                for idx in 0..hpts.len() {
-//                    ptset.insert(hpts[idx]);
-//                }
             }
 
             //check for all vertices
