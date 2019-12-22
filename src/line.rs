@@ -288,6 +288,12 @@ macro_rules! ln {
     };
 }
 
+//impl GeometryClone for LineString {
+//    fn clone_box(&self) -> Box<dyn Geometry> {
+//        Box::new(self.clone())
+//    }
+//}
+
 impl Geometry for LineString {
     fn bbox(&self) -> MBR {
         self.bounds.mbr

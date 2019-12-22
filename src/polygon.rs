@@ -55,6 +55,12 @@ impl Polygon {
 }
 
 
+//impl GeometryClone for Polygon {
+//    fn clone_box(&self) -> Box<dyn Geometry> {
+//        Box::new(self.clone())
+//    }
+//}
+
 impl Geometry for Polygon {
     fn bbox(&self) -> MBR {
         self.shell().0.bounds.mbr

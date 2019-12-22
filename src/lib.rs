@@ -15,7 +15,7 @@ pub use coordinate::Coordinate;
 pub use crate::point::{
     Point, Points,
     reverse_direction,
-    deflection_angle
+    deflection_angle,
 };
 pub use crate::pointz::{PointZ, PointZs};
 pub use crate::line::LineString;
@@ -75,8 +75,23 @@ impl std::fmt::Display for GeomType {
     }
 }
 
+pub trait GeometryClone {
+    fn clone_box(&self) -> Box<dyn Geometry>;
+}
 
-pub trait Geometry  {
+impl<T> GeometryClone for T where T: 'static + Geometry + Clone, {
+    fn clone_box(&self) -> Box<dyn Geometry> {
+        Box::new(self.clone())
+    }
+}
+
+impl Clone for Box<dyn Geometry> {
+    fn clone(&self) -> Box<dyn Geometry> {
+        self.clone_box()
+    }
+}
+
+pub trait Geometry: GeometryClone {
     fn bbox(&self) -> MBR;
     fn as_linear(&self) -> Vec<LineString>;
     fn wkt_string(&self) -> String;

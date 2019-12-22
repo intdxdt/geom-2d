@@ -364,6 +364,12 @@ impl Coordinate for Point {
     }
 }
 
+//impl GeometryClone for Point {
+//    fn clone_box(&self) -> Box<dyn Geometry> {
+//        Box::new(self.clone())
+//    }
+//}
+
 impl Geometry for Point {
     fn bbox(&self) -> MBR {
         MBR::new_from_pt(self.as_array())

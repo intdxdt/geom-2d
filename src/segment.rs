@@ -59,6 +59,12 @@ impl Segment {
     }
 }
 
+//impl GeometryClone for Segment {
+//    fn clone_box(&self) -> Box<dyn Geometry> {
+//        Box::new(self.clone())
+//    }
+//}
+
 impl Geometry for Segment {
     fn bbox(&self) -> MBR {
         MBR::new_from_bounds(self.a().as_array(), self.b().as_array())
