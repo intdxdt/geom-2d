@@ -228,10 +228,10 @@ impl LineString {
 
 
     ///Segments in range
-    fn segs_in_range(&self, seglist: &mut Vec<Point>, inter: &MBR, i: i32, j: i32) {
+    fn segs_in_range(&self, seglist: &mut Vec<Point>, inter: &MBR, i: usize, j: usize) {
         seglist.clear();
         for i in i..j {
-            let (m, n) = (i as usize, (i + 1) as usize);
+            let (m, n) = (i , (i + 1));
             if inter.intersects_bounds(
                 &self.coordinates[m].as_array(),
                 &self.coordinates[n].as_array(),

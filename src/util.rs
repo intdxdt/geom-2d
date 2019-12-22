@@ -4,11 +4,27 @@ use rtree_2d::RTree;
 use crate::mono::NULL_INDEX;
 use crate::{Point, Coordinate, MonoMBR};
 
-const MINI_MONO_SIZE: i32 = 8;
+
+const MINI_MONO_SIZE: usize = 8;
+
+#[derive(Copy, Clone)]
+pub enum Sign { Pos, Zero, Neg, Non }
+
+impl Sign {
+    fn is_non(&self) -> bool {
+        match self {
+            Sign::Non => true,
+            _ => false
+        }
+    }
+    fn is_same(&self, other: &Sign) -> bool {
+        std::mem::discriminant(self) == std::mem::discriminant(other)
+    }
+}
 
 pub fn process_chains(coordinates: &Vec<Point>) -> (MonoMBR, Vec<MonoMBR>) {
-    let n = coordinates.len() as i32;
-    let (i, j) = (0i32, n - 1);
+    let n = coordinates.len();
+    let (i, j) = (0usize, n - 1);
 
     if n < MINI_MONO_SIZE {
         let mut mbr = MBR::new_from_pt(coordinates[0].as_array());
@@ -22,8 +38,8 @@ pub fn process_chains(coordinates: &Vec<Point>) -> (MonoMBR, Vec<MonoMBR>) {
     }
 
     let mono_limit = ((j + 1) as f64 + 1.0).log2() as i32;
-    let mut prev_x = NULL_INDEX;
-    let mut prev_y = NULL_INDEX;
+    let mut prev_x = Sign::Non;
+    let mut prev_y = Sign::Non;
 
     let mut chains = Vec::new();
     let mut root_bbox = MonoMBR::new_mono(coordinates[0].as_array().into());
@@ -37,22 +53,22 @@ pub fn process_chains(coordinates: &Vec<Point>) -> (MonoMBR, Vec<MonoMBR>) {
 
 
     for i in (i + 1)..=j {
-        let a = coordinates[(i - 1) as usize];
-        let b = coordinates[i as usize];
+        let a = coordinates[(i - 1)];
+        let b = coordinates[i];
         let delta = b.sub(&a);
         let cur_x = xy_sign(delta.x);
         let cur_y = xy_sign(delta.y);
 
-        if prev_x == NULL_INDEX {
+        if prev_x.is_non() {
             prev_x = cur_x
         }
 
-        if prev_y == NULL_INDEX {
+        if prev_y.is_non() {
             prev_y = cur_y
         }
 
         mono_size += 1;
-        if prev_x == cur_x && prev_y == cur_y && mono_size <= mono_limit {
+        if prev_x.is_same( &cur_x) && prev_y.is_same(&cur_y) && mono_size <= mono_limit {
             xy_mono_box(coordinates, &mut chains[m_index], &mut root_bbox, i, NULL_INDEX)
         } else {
             mono_size = 1;
@@ -70,7 +86,7 @@ pub fn process_chains(coordinates: &Vec<Point>) -> (MonoMBR, Vec<MonoMBR>) {
 }
 
 //compute bbox of x or y mono chain
-fn xy_mono_box(coordinates: &Vec<Point>, mbox: &mut MonoMBR, root_bbox: &mut MonoMBR, i: i32, j: i32) {
+fn xy_mono_box(coordinates: &Vec<Point>, mbox: &mut MonoMBR, root_bbox: &mut MonoMBR, i: usize, j: usize) {
     if i != NULL_INDEX {
         let pt = coordinates[i as usize];
         mbox.mbr.expand_to_include_xy(pt.x, pt.y);
@@ -93,12 +109,11 @@ fn xy_mono_box(coordinates: &Vec<Point>, mbox: &mut MonoMBR, root_bbox: &mut Mon
     }
 }
 
- pub fn segment_db(coords: &Vec<Point>) -> RTree<MonoMBR> {
+pub fn segment_db(coords: &Vec<Point>) -> RTree<MonoMBR> {
     let n = coords.len() - 1;
     let mut items = Vec::with_capacity(n);
     for i in 0..n {
-        let j = i + 1;
-        items.push(MonoMBR::new_mono_ij(coords[i], coords[j], i as i32, j as i32));
+        items.push(MonoMBR::new_mono_ij(coords[i], coords[i + 1], i, i + 1));
     }
     RTree::load(items)
 }
@@ -107,8 +122,7 @@ pub fn query_bounds(coords: &Vec<Point>) -> Vec<MonoMBR> {
     let n = coords.len() - 1;
     let mut items = Vec::with_capacity(n);
     for i in 0..n {
-        let j = i + 1;
-        items.push(MonoMBR::new_mono_ij(coords[i], coords[j], i as i32, j as i32))
+        items.push(MonoMBR::new_mono_ij(coords[i], coords[i + 1], i , i + 1 ))
     }
     items
 }
@@ -116,9 +130,10 @@ pub fn query_bounds(coords: &Vec<Point>) -> Vec<MonoMBR> {
 
 ///find the sign of value -1, 0 , 1
 #[inline]
-pub fn xy_sign(v: f64) -> i32 {
-    if v > 0. { 1 } else if v < 0. { -1 } else { 0 }
+pub fn xy_sign(v: f64) -> Sign {
+    if v > 0. { Sign::Pos } else if v < 0. { Sign::Neg } else { Sign::Zero }
 }
+
 
 #[inline]
 ///Snap value to zero

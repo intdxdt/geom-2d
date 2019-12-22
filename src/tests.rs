@@ -161,9 +161,9 @@ fn test_line_string_relate() {
 fn test_line_string_mono() {
     let pts = pts![[5.78, 8.07], [6.44, 9.09], [7.87, 9.61]];
     let ln = LineString::new(&pts);
-    let n = ln.coordinates.len() as i32;
+    let n = ln.coordinates.len();
 
-    let (a, b) = (pts[0], pts[(n - 1) as usize]);
+    let (a, b) = (pts[0], pts[(n - 1)]);
     let bounds = MBR::new_from_bounds(a.as_array(), b.as_array());
     let mbox = MonoMBR { mbr: bounds, i: 0, j: n - 1 };
     assert_eq!(mbox.i, ln.bounds.i);

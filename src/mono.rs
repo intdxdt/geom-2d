@@ -3,13 +3,13 @@ use bbox_2d::MBR;
 use crate::Point;
 use std::fmt::{Display, Formatter, Error};
 
-pub const NULL_INDEX: i32 = -9;
+pub const NULL_INDEX: usize = std::usize::MAX;
 
 #[derive(Copy, Clone, Debug)]
 pub struct MonoMBR {
     pub mbr: MBR,
-    pub i: i32,
-    pub j: i32,
+    pub i: usize,
+    pub j: usize,
 }
 
 impl MonoMBR {
@@ -17,7 +17,7 @@ impl MonoMBR {
         MonoMBR::new_mono(MBR::new_from_bounds(a.as_array(), b.as_array()))
     }
 
-    pub fn new_mono_ij(a: Point, b: Point, i: i32, j: i32) -> MonoMBR {
+    pub fn new_mono_ij(a: Point, b: Point, i: usize, j: usize) -> MonoMBR {
         MonoMBR { mbr: MBR::new_from_bounds(a.as_array(), b.as_array()), i, j }
     }
 
