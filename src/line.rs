@@ -16,8 +16,7 @@ pub struct LineString {
 
 impl LineString {
     ///New LineString
-    pub fn new(coords: &[Point]) -> LineString {
-        let coordinates = coords.to_vec();
+    pub fn new(coordinates: Vec<Point>) -> LineString {
         if coordinates.len() < 2 {
             panic!("a linestring must have at least 2 coordinates");
         }
@@ -44,7 +43,7 @@ impl LineString {
     }
     ///Linestring from point
     pub fn from_point(pt: Point) -> LineString {
-        LineString::new(&[pt, pt])
+        LineString::new(vec![pt, pt])
     }
 
     ///Construct from wkt
@@ -352,7 +351,7 @@ impl From<&str> for LineString {
         let o = parse_wkt(wkt_str);
         match o.geom_type {
             GeomType::LineString => {
-                LineString::new(&o.coordinates[0])
+                LineString::new(o.coordinates[0].clone())
             }
             _ => {
                 let msg = if o.success {
@@ -374,7 +373,7 @@ impl From<Vec<Point>> for LineString {
 
 impl From<&Vec<Point>> for LineString {
     fn from(coordinates: &Vec<Point>) -> Self {
-        LineString::new(coordinates)
+        LineString::new(coordinates.to_vec())
     }
 }
 
@@ -390,7 +389,7 @@ impl From<Vec<[f64; 2]>> for LineString {
 
 impl From<&[Point]> for LineString {
     fn from(coordinates: &[Point]) -> Self {
-        LineString::new(coordinates)
+        LineString::new(coordinates.to_vec())
     }
 }
 

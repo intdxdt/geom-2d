@@ -7,15 +7,15 @@ pub struct LinearRing(pub LineString);
 
 impl LinearRing {
     ///New linear ring
-    pub fn new(coords: &[Point]) -> LinearRing {
-        let mut coordinates = coords.to_vec();
+    pub fn new(coordinates:Vec<Point>) -> LinearRing {
+        let mut coordinates = coordinates;
         let n = coordinates.len();
         if n > 1 {
             if !is_ring(&coordinates) {
                 coordinates.push(coordinates[0])
             }
         }
-        LinearRing(LineString::new(&coordinates))
+        LinearRing(LineString::new(coordinates))
     }
     pub fn bbox(&self) -> &MBR {
         &self.0.bounds.mbr

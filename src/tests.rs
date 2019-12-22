@@ -12,8 +12,7 @@ use std::cmp::Ordering;
 #[test]
 #[should_panic]
 fn test_construct_0() {
-    let coords: Vec<Point> = vec![];
-    let _ln = LineString::new(&coords);
+    let _ln = LineString::new(vec![]);
 }
 
 #[test]
@@ -89,11 +88,11 @@ fn test_length() {
     let _pt_array2 = pts![[5, 7], [5, 8], [6, 8], [6, 7 ], [5, 7]];
 
     let ln2 = pts![[5.538, 8.467], [5.498, 8.559], [5.858, 8.987], [6.654, 8.638], [6.549, 8.024], [5.765, 8.082], [5.538, 8.467]];
-    let ln2 = LinearRing::new(&ln2);
+    let ln2 = LinearRing::new(ln2.clone());
     let ln3 = ln![[5.538, 8.467], [5.498, 8.559], [5.858, 8.987], [6.654, 8.638], [6.549, 8.024], [5.765, 8.082]];
 
     let ln: LineString = (&pts).into();
-    let ply = Polygon::new(&[ln2.coordinates().clone()]);
+    let ply = Polygon::new(vec![ln2.coordinates().clone()]);
 
 //    let cln = ln.clone();
     let pt_lnstr = LineString::from_point(pts[0].into());
@@ -122,8 +121,8 @@ fn test_line_string_relate() {
     let plywktf = "POLYGON (( -0.277913921826967 -0.5367427902210501, -0.4850871029131916 -0.6997643097643087, -0.3424432733128402 -0.8152378861074503, -0.2337622602840011 -0.7303308446786697, -0.1080998389694059 -0.8661821109647186, 0.0141663006880382 -0.7371234079929722, -0.1182886839408595 -0.5842907334211672, -0.277913921826967 -0.5367427902210501 ))";
     let plywktg = "POLYGON (( 0.1161332552173457 -0.4654208754208744, 0.1161332552173457 -0.2431398008042315, 0.2824725516029848 -0.2431398008042315, 0.2824725516029848 -0.4654208754208744, 0.1161332552173457 -0.4654208754208744 ))";
 
-    let lna = LineString::new(&coords);
-    let lnb = LineString::new(&coords2);
+    let lna = LineString::new(coords);
+    let lnb = LineString::new(coords2.clone());
     let plya = Polygon::from_vec(&coords2);
 
     let plyb = Polygon::from_wkt(plywkt);
@@ -160,7 +159,7 @@ fn test_line_string_relate() {
 #[test]
 fn test_line_string_mono() {
     let pts = pts![[5.78, 8.07], [6.44, 9.09], [7.87, 9.61]];
-    let ln = LineString::new(&pts);
+    let ln = LineString::new(pts.clone());
     let n = ln.coordinates.len();
 
     let (a, b) = (pts[0], pts[(n - 1)]);
@@ -260,8 +259,8 @@ fn test_geometry_intersection() {
 fn test_polygon() {
     let sh = pts![[35, 10], [45, 45], [15, 40], [10, 20], [35, 10]];
     let h1 = pts![[20, 30], [35, 35], [30, 20], [20, 30]];
-    let poly0 = Polygon::new(&[sh.clone()]);
-    let poly = Polygon::new(&[sh.clone(), h1.clone()]);
+    let poly0 = Polygon::new(vec![sh.clone()]);
+    let poly = Polygon::new(vec![sh.clone(), h1.clone()]);
 
     let wkt = "POLYGON (( 33.52991674117594 27.137460594059416, 33.52991674117594 30.589750223527805, 36.44941148514852 30.589750223527805, 36.44941148514852 27.137460594059416, 33.52991674117594 27.137460594059416 ))";
     let ply_inpoly = Polygon::from_wkt(wkt);

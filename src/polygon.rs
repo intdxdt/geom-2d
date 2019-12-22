@@ -8,13 +8,13 @@ pub struct Polygon(pub Vec<LinearRing>);
 
 impl Polygon {
     ///Construct from coordinates
-    pub fn new(coordinates: &[Vec<Point>]) -> Polygon {
+    pub fn new(coordinates: Vec<Vec<Point>>) -> Polygon {
         Polygon(lnr_rings(coordinates))
     }
 
     ///Construct from coordinates
     pub fn from_vec(coordinates: &Vec<Point>) -> Polygon {
-        Polygon::new(&vec![coordinates.clone()])
+        Polygon::new(vec![coordinates.clone()])
     }
 
     ///Construct from wkt
@@ -154,7 +154,7 @@ impl From<&str> for Polygon {
         let o = parse_wkt(wkt_str);
         match o.geom_type {
             GeomType::Polygon => {
-                Polygon::new(&o.coordinates)
+                Polygon::new(o.coordinates)
             }
             _ => {
                 let msg = if o.success {
@@ -170,8 +170,8 @@ impl From<&str> for Polygon {
 
 
 //polygon lnr_rings
-fn lnr_rings(coordinates: &[Vec<Point>]) -> Vec<LinearRing> {
-    coordinates.iter()
+fn lnr_rings(coordinates: Vec<Vec<Point>>) -> Vec<LinearRing> {
+    coordinates.into_iter()
         .map(|coords| LinearRing::new(coords))
         .collect()
 }
