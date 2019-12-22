@@ -7,8 +7,8 @@ fn main() {
     let c: Polygon = "POLYGON (( 675 475, 675 550, 825 550, 825 475, 675 475 ))".into();
     println!("area = {}", a.area());
     println!("a <intersects> b = {}", a.intersects(&b));
-    println!("a   <distance> b = {}", a.distance(&b));
-    println!("a   <distance> c = {}", a.distance(&c));
+    println!("a <distance>   b = {}", a.distance(&b));
+    println!("a <distance>   c = {}", a.distance(&c));
     let inters = a.intersection(&b);
     println!("a <intersection> b : ");
     inters.iter().for_each(|o| println!("{}", o));
