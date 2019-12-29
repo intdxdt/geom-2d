@@ -2,8 +2,7 @@ use crate::Point;
 
 /// Computes the convex hull of a point set.
 pub fn convex_hull(points: &[Point]) -> Vec<Point> {
-    let mut pnts = Vec::with_capacity(points.len());
-    pnts.extend_from_slice(points);
+    let mut pnts = points.to_vec();
     //trivial case less than three coordinates
     if pnts.len() < 3 {
         return pnts;
