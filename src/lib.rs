@@ -79,7 +79,7 @@ pub trait GeometryClone {
     fn clone_box(&self) -> Box<dyn Geometry>;
 }
 
-impl<T> GeometryClone for T where T: 'static + Geometry + Clone, {
+impl<T> GeometryClone for T where T: 'static + Geometry + Clone {
     fn clone_box(&self) -> Box<dyn Geometry> {
         Box::new(self.clone())
     }
@@ -104,4 +104,4 @@ pub trait Geometry: GeometryClone {
 }
 
 #[cfg(test)]
-mod tests;
+mod tests_geom;

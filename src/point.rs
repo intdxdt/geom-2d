@@ -16,7 +16,7 @@ use crate::distance;
 /// Point is a 2D (x:float, y:float) point type.
 /// float : f64 - required for most computations
 /// requiring area, distance, trigonometry, etc.
-#[derive(Serialize, Deserialize, Copy, Clone, PartialOrd, Debug)]
+#[derive(Serialize, Deserialize, Copy, Clone, PartialOrd, Debug, Default)]
 pub struct Point {
     pub x: f64,
     pub y: f64,

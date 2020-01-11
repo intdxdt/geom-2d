@@ -9,7 +9,7 @@ use std::cmp::Ordering;
 use crate::Point;
 
 /// PointZ is a 3D (x:float, y:float, z:float) point type.
-#[derive(Serialize, Deserialize, Copy, Clone, PartialOrd, Debug)]
+#[derive(Serialize, Deserialize, Copy, Clone, PartialOrd, Debug, Default)]
 pub struct PointZ {
     pub x: f64,
     pub y: f64,
